@@ -10,7 +10,6 @@ from plone.app.contentrules.browser.formhelper import AddForm, EditForm
 from plone.app.vocabularies.groups import GroupsSource
 from plone.app.vocabularies.users import UsersSource
 from plone.app.form.widgets.uberselectionwidget import UberMultiSelectionWidget
-from plone.app.form.widgets.uberselectionwidget import UberSelectionWidget
 from plone.contentrules.rule.interfaces import IRuleElementData, IExecutable
 
 from Products.CMFCore.utils import getToolByName
@@ -146,8 +145,8 @@ class MailGroupAddForm(AddForm):
     label = _(u"Add Mail Group Action")
     description = _(u"A mail action can mail different groups and members.")
     form_name = _(u"Configure element")
-#    form_fields['groups'].custom_widget = UberSelectionWidget
-#    form_fields['members'].custom_widget = UberMultiSelectionWidget
+    form_fields['groups'].custom_widget = UberMultiSelectionWidget
+    form_fields['members'].custom_widget = UberMultiSelectionWidget
 
 
 
@@ -164,5 +163,5 @@ class MailGroupEditForm(EditForm):
     label = _(u"Edit Mail group Action")
     description = _(u"A mail action can mail different recipient.")
     form_name = _(u"Configure element")
-#    form_fields['groups'].custom_widget = UberSelectionWidget
-#    form_fields['members'].custom_widget = UberMultiSelectionWidget
+    form_fields['groups'].custom_widget = UberMultiSelectionWidget
+    form_fields['members'].custom_widget = UberMultiSelectionWidget
