@@ -88,9 +88,8 @@ class MailActionExecutor(object):
         for groupId in self.element.groups:
             group = portal_groups.getGroupById(groupId)
 
-            groupEmail = group.getProperties().get('email')
-            if groupEmail:
-                recipients.update([groupEmail],)
+            if group and group.getProperties().get('email'):
+                recipients.update([group.getProperties().get('email')],)
 
             groupMembers = group.getGroupMemberIds()
             for memberId in groupMembers:
