@@ -12,7 +12,10 @@ collective.contentrules.mailtogroup.egg-info/requires.txt
 collective.contentrules.mailtogroup.egg-info/top_level.txt
 collective/contentrules/__init__.py
 collective/contentrules/mailtogroup/__init__.py
+collective/contentrules/mailtogroup/configure.zcml
 collective/contentrules/mailtogroup/actions/__init__.py
+collective/contentrules/mailtogroup/actions/configure.zcml
 collective/contentrules/mailtogroup/actions/mail.py
 collective/contentrules/mailtogroup/tests/__init__.py
 collective/contentrules/mailtogroup/tests/test_action_mail_to_group.py
+docs/HISTORY.txt
