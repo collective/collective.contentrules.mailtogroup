@@ -24,6 +24,18 @@ Under 'actions' you now have a new option: Send email to groups and users.
 When searching for users and groups make sure you press the search button. Don't
 hit enter. Search results for these items are only shown when you press search.
 
+UberMultiSelectionWidget
+========================
+This content rule uses the UberMultiSelectionWidget from plone.app.form. This 
+widget is broken in version 1.1.7 of plone.app.form. Plone 3.3.4 has this version.
+
+As of version 1.1.8 the widget is working again. To use the correct version pin 
+down plone.app.form:
+
+[versions]
+...
+plone.app.form = 1.1.8
+
 Credits
 =======
 
