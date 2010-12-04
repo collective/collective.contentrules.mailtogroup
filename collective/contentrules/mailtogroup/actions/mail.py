@@ -132,8 +132,7 @@ action or enter an email in the portal properties'
             self.context.plone_log('sending to: %s' % email_recipient)
             mailhost.secureSend(message, email_recipient, source,
                                 subject=subject, subtype='plain',
-                                charset=email_charset, debug=False,
-                                From=source)
+                                charset=email_charset, debug=False)
         return True
 
 class MailGroupAddForm(AddForm):
