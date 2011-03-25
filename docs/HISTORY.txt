@@ -7,6 +7,8 @@ Changelog
 * Fixed error when used on Plone 4: passing 'From' to secureSend is
   not needed in Plone 3 and breaks in Plone 4.
   [maurits]
+* Added z3c.autoinclude in setup.py
+  [kcleong]
 
 
 1.0 (2010-02-12)
