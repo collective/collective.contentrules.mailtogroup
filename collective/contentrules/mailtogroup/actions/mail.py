@@ -130,9 +130,16 @@ action or enter an email in the portal properties'
 
         for email_recipient in recipients:
             self.context.plone_log('sending to: %s' % email_recipient)
-            mailhost.secureSend(message, email_recipient, source,
-                                subject=subject, subtype='plain',
-                                charset=email_charset, debug=False)
+
+            try: # sending mail in Plone 4
+                mailhost.send(message, mto=email_recipient, mfrom=source,
+                        subject=subject, charset=email_charset)
+            except: #sending mail in Plone 3
+                mailhost.secureSend(message, email_recipient, source,
+                        subject=subject, subtype='plain',
+                        charset=email_charset, debug=False)
+
+
         return True
 
 class MailGroupAddForm(AddForm):

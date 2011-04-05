@@ -9,6 +9,9 @@ Changelog
   [maurits]
 * Added z3c.autoinclude in setup.py
   [kcleong]
+* Using 'send' instead of deprecated 'secureSend' in Plone 4. For Plone 3
+  secureSend is used.
+  [kcleong]
 
 
 1.0 (2010-02-12)
