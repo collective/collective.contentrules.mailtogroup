@@ -6,7 +6,7 @@
     i18n_domain="collective.contentrules.mailtolocalrole">
 
   <five:registerPackage package="." />
-
+  <include package="Products.CMFCore" />
   <include package=".actions"/>
 </configure>
 
