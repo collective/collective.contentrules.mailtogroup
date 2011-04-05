@@ -1,17 +1,23 @@
 Changelog
 =========
 
-1.1 (unreleased)
+1.2 (2011-04-05)
 ----------------
 
-* Fixed error when used on Plone 4: passing 'From' to secureSend is
-  not needed in Plone 3 and breaks in Plone 4.
-  [maurits]
 * Added z3c.autoinclude in setup.py
   [kcleong]
 * Using 'send' instead of deprecated 'secureSend' in Plone 4. For Plone 3
   secureSend is used.
   [kcleong]
+* Use include for CMFCore in zcml, fixes permission bug in Plone 4.1
+  [uittenbroek]
+
+1.1 (2010-12-06)
+----------------
+
+* Fixed error when used on Plone 4: passing 'From' to secureSend is
+  not needed in Plone 3 and breaks in Plone 4.
+  [maurits]
 
 
 1.0 (2010-02-12)
