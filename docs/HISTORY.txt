@@ -5,6 +5,12 @@ Changelog
 1.3 - unreleased
 ----------------
 
+- Add LICENSE.txt + LICENSE.GPL in /docs.
+  [WouterVH]
+
+- Remove old-style i18n-directory, and register locales-folders.
+  [WouterVH]
+
 - Add MANIFEST.in
   [WouterVH]
 
