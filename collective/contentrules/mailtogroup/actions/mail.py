@@ -6,7 +6,7 @@ from zope.interface import Interface, implements
 from zope.formlib import form
 from zope import schema
 
-from plone.app.contentrules.browser.formhelper import AddForm, EditForm 
+from plone.app.contentrules.browser.formhelper import AddForm, EditForm
 from plone.app.vocabularies.groups import GroupsSource
 from plone.app.vocabularies.users import UsersSource
 from plone.app.form.widgets.uberselectionwidget import UberMultiSelectionWidget
@@ -20,28 +20,42 @@ from Products.CMFPlone.utils import safe_unicode
 class IMailGroupAction(Interface):
     """Definition of the configuration available for a mail action
     """
-    subject = schema.TextLine(title=_(u"Subject"),
-                              description=_(u"Subject of the message"),
-                              required=True)
-    source = schema.TextLine(title=_(u"Email source"),
-                             description=_("The email address that sends the \
-email. If no email is provided here, it will use the portal from address."),
-                             required=False)
-    members = schema.List(title=_(u"User(s) to mail"),
-                        description=_("The members where you want to\
- send the e-mail message."),
-                        value_type=schema.Choice(source=UsersSource),
-                        required=False)
-    groups = schema.List(title=_(u"Group(s) to mail"),
-                         description=_("The group where you want to\
- send this message. All members of the group will receive an email."),
-                         value_type=schema.Choice(source=GroupsSource),
-                         required=False)
-    message = schema.Text(title=_(u"Message"),
-                          description=_(u"Type in here the message that you \
-want to mail. Some defined content can be replaced: ${title} will be replaced \
-by the title of the item. ${url} will be replaced by the URL of the item."),
-                          required=True)
+    subject = schema.TextLine(
+        title = _(u"Subject"),
+        description = _(u"Subject of the message"),
+        required = True
+        )
+
+    source = schema.TextLine(
+        title = _(u"Email source"),
+        description = _("The email address that sends the email. If no email is \
+            provided here, it will use the portal from address."),
+         required = False
+         )
+
+    members = schema.List(
+        title = _(u"User(s) to mail"),
+        description = _("The members where you want to send the e-mail message."),
+        value_type = schema.Choice(source=UsersSource),
+        required = False
+        )
+
+    groups = schema.List(
+        title = _(u"Group(s) to mail"),
+        description = _("The group where you want to send this message. All \
+            members of the group will receive an email."),
+        value_type = schema.Choice(source=GroupsSource),
+        required = False
+        )
+
+    message = schema.Text(
+        title = _(u"Message"),
+        description = _(u"Type in here the message that you want to mail. Some \
+            defined content can be replaced: ${title} will be replaced by the title \
+            of the item. ${url} will be replaced by the URL of the item."),
+        required = True
+        )
+
 
 class MailGroupAction(SimpleItem):
     """
@@ -59,8 +73,8 @@ class MailGroupAction(SimpleItem):
 
     @property
     def summary(self):
-        groups = ', '.join(self.groups) 
-        members = ', '.join(self.members) 
+        groups = ', '.join(self.groups)
+        members = ', '.join(self.members)
         return _(u"Email report to the groups ${groups} and the members \
 ${members}", mapping=dict(groups=groups, members=members))
 
@@ -76,30 +90,28 @@ class MailActionExecutor(object):
         self.element = element
         self.event = event
 
-
-
     def __call__(self):
         portal_membership = getToolByName(aq_inner(self.context), 'portal_membership')
         portal_groups = getToolByName(aq_inner(self.context), 'portal_groups')
 
         members = set(self.element.members)
         recipients = set()
-        
+
         for groupId in self.element.groups:
             group = portal_groups.getGroupById(groupId)
 
             if group and group.getProperties().get('email'):
-                recipients.update([group.getProperties().get('email')],)
+                recipients.update([group.getProperties().get('email')], )
 
             groupMembers = group.getGroupMemberIds()
             for memberId in groupMembers:
-                members.update([memberId,])
- 
+                members.update([memberId, ])
+
         for memberId in members:
             member = portal_membership.getMemberById(memberId)
             if member and member.getProperty('email'):
-               recipients.update([member.getProperty('email'),])
-            
+                recipients.update([member.getProperty('email'), ])
+
         mailhost = getToolByName(aq_inner(self.context), "MailHost")
         if not mailhost:
             raise ComponentLookupError, 'You must have a Mailhost utility to \
@@ -142,6 +154,7 @@ action or enter an email in the portal properties'
 
         return True
 
+
 class MailGroupAddForm(AddForm):
     """
     An add form for the mail action
@@ -153,12 +166,11 @@ class MailGroupAddForm(AddForm):
     form_fields['groups'].custom_widget = UberMultiSelectionWidget
     form_fields['members'].custom_widget = UberMultiSelectionWidget
 
-
-
     def create(self, data):
         a = MailGroupAction()
         form.applyChanges(a, self.form_fields, data)
         return a
+
 
 class MailGroupEditForm(EditForm):
     """
