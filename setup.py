@@ -25,6 +25,7 @@ setup(name='collective.contentrules.mailtogroup',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'plone.app.form>=1.1.8'
           # -*- Extra requirements: -*-
       ],
       entry_points="""

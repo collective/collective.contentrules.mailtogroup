@@ -52,7 +52,8 @@ class IMailGroupAction(Interface):
         title = _(u"Message"),
         description = _(u"Type in here the message that you want to mail. Some \
             defined content can be replaced: ${title} will be replaced by the title \
-            of the item. ${url} will be replaced by the URL of the item."),
+            of the item. ${url} will be replaced by the URL of the item. \
+            ${namedirectory} will be replaced by the Title of the folder the rule is applied to."),
         required = True
         )
 
@@ -136,9 +137,11 @@ action or enter an email in the portal properties'
         event_url = obj.absolute_url()
         message = self.element.message.replace("${url}", event_url)
         message = message.replace("${title}", event_title)
+        message = message.replace("${namedirectory}", self.context.Title())
 
         subject = self.element.subject.replace("${url}", event_url)
         subject = subject.replace("${title}", event_title)
+        subject = subject.replace("${namedirectory}", self.context.Title())
 
         for email_recipient in recipients:
             self.context.plone_log('sending to: %s' % email_recipient)

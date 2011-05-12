@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.4 - unreleased
+
+- Add the {namedirectory} variabel. Which can be used in the subject or message
+  to show the title of the folder the rule is applied to.
+  [puittenbroek]
 
 1.3 - unreleased
 ----------------
@@ -26,7 +31,7 @@ Changelog
   [kcleong]
 
 - Use include for CMFCore in zcml, fixes permission bug in Plone 4.1
-  [uittenbroek]
+  [puittenbroek]
 
 
 1.1 - 2010-12-06
