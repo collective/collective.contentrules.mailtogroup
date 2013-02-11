@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.5'
+version = '1.6dev'
 
 setup(name='collective.contentrules.mailtogroup',
       version=version,
@@ -11,6 +11,7 @@ setup(name='collective.contentrules.mailtogroup',
       # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
         "Development Status :: 4 - Beta",
+        "Framework :: Plone",
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
         ],
