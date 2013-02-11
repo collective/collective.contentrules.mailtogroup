@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.5 (2013-02-11)
+----------------
+
+- Added 'text' as a substitutable variable and perform text-transformation,
+  in order to send the message as html and as plain-text, providing a fallback
+  for non-html-capable email-clients. [ida]
+
+
 1.4 - unreleased
 
 - Add the {namedirectory} variabel. Which can be used in the subject or message
