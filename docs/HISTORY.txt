@@ -4,6 +4,8 @@ Changelog
 1.6dev (unreleased)
 -------------------
 
+- Replaced To-address from 'source' to 'from_address',
+  'source' returns name and address, we only need the address. [ida]
 
 
 1.5 (2013-02-11)

@@ -162,7 +162,7 @@ action or enter an email in the portal properties'
         mime_msg = MIMEMultipart('related')
         mime_msg['Subject'] = subject
         mime_msg['From'] = source
-        mime_msg['To'] = source
+        mime_msg['To'] = from_address
         mime_msg['Bcc'] =  ', '.join( list_of_recipients )
         mime_msg.preamble = 'This is a multi-part message in MIME format.'
 
