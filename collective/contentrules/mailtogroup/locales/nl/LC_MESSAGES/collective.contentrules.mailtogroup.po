@@ -1,0 +1,83 @@
+# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2011-04-14 11:44+0000\n"
+"PO-Revision-Date: 2011-04-14 11:44+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: nl\n"
+"Language-Name: Dutch\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: collective.contentrules.mailtogroup\n"
+
+#: ./actions/mail.py:164
+msgid "A mail action can mail different groups and members."
+msgstr ""
+
+#: ./actions/mail.py:181
+msgid "A mail action can mail different recipient."
+msgstr ""
+
+#: ./actions/mail.py:163
+msgid "Add Mail Group Action"
+msgstr ""
+
+#: ./actions/mail.py:165
+msgid "Configure element"
+msgstr ""
+
+#: ./actions/mail.py:180
+msgid "Edit Mail group Action"
+msgstr ""
+
+#: ./actions/mail.py:78
+msgid "Email report to the groups ${groups} and the members ${members}"
+msgstr ""
+
+#: ./actions/mail.py:30
+msgid "Email source"
+msgstr ""
+
+#: ./actions/mail.py:44
+msgid "Group(s) to mail"
+msgstr ""
+
+#: ./actions/mail.py:52
+msgid "Message"
+msgstr ""
+
+#: ./actions/mail.py:24
+msgid "Subject"
+msgstr ""
+
+#: ./actions/mail.py:25
+msgid "Subject of the message"
+msgstr ""
+
+#: ./actions/mail.py:31
+msgid "The email address that sends the email. If no email is             provided here, it will use the portal from address."
+msgstr ""
+
+#: ./actions/mail.py:45
+msgid "The group where you want to send this message. All             members of the group will receive an email."
+msgstr ""
+
+#: ./actions/mail.py:38
+msgid "The members where you want to send the e-mail message."
+msgstr ""
+
+#: ./actions/mail.py:53
+msgid "Type in here the message that you want to mail. Some             defined content can be replaced: ${title} will be replaced by the title             of the item. ${url} will be replaced by the URL of the item."
+msgstr ""
+
+#: ./actions/mail.py:37
+msgid "User(s) to mail"
+msgstr ""
+
