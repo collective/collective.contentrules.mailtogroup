@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '1.6dev'
+version = '1.4dev'
 
 setup(name='collective.contentrules.mailtogroup',
       version=version,
