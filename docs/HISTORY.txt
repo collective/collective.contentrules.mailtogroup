@@ -4,7 +4,7 @@ Changelog
 1.4dev (unreleased)
 -------------------
 
-- Added exeption, if text-variable is used, but an item doesn't have a text-field.
+- Added exception, if text-variable is used, but an item doesn't have a text-field.
   Concerns actions/mail.py [ida]
 
 
