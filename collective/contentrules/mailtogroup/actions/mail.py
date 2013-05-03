@@ -140,8 +140,11 @@ action or enter an email in the portal properties'
         obj = self.event.object
         event_title = safe_unicode(obj.Title())
         event_url = obj.absolute_url()
-        event_text = safe_unicode(obj.getText())
-        
+        # Not all items have a text-field:
+        try:
+            event_text = safe_unicode(obj.getText())
+        except:
+            event_text = ''
         message = self.element.message.replace("${url}", event_url)
         message = message.replace("${title}", event_title)
         message = message.replace("${namedirectory}", self.context.Title())
