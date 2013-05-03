@@ -74,8 +74,10 @@ msgid "The members where you want to send the e-mail message."
 msgstr ""
 
 #: ./actions/mail.py:53
-msgid "Type in here the message that you want to mail. Some             defined content can be replaced: ${title} will be replaced by the title             of the item. ${url} will be replaced by the URL of the item."
+msgid "Type in here the message that you want to mail. Some             defined content can be replaced: ${title} will be replaced by the title             of the item. ${url} will be replaced by the URL of the item. ${text} will be replace by the body-text-field (if the item has a field named 'text') and send it as HTML with a plain-text-fallback."
 msgstr ""
+
+
 
 #: ./actions/mail.py:37
 msgid "User(s) to mail"

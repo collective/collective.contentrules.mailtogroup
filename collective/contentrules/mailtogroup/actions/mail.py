@@ -56,7 +56,9 @@ class IMailGroupAction(Interface):
         description = _(u"Type in here the message that you want to mail. Some \
             defined content can be replaced: ${title} will be replaced by the title \
             of the item. ${url} will be replaced by the URL of the item. \
-            ${namedirectory} will be replaced by the Title of the folder the rule is applied to."),
+            ${namedirectory} will be replaced by the Title of the folder the rule is applied to. \
+            ${text} will be replace by the body-text-field (if the item has a field named 'text') \
+            and send it as HTML with a plain-text-fallback."),
         required = True
         )
 
