@@ -1,14 +1,16 @@
-from setuptools import setup, find_packages
-import os
+from setuptools import find_packages
+from setuptools import setup
 
 version = '1.4dev'
+long_description = (
+    open('README.rst').read() + '\n' +
+    open('CHANGES.rst').read()
+)
 
 setup(name='collective.contentrules.mailtogroup',
       version=version,
       description="Send e-mail to groups and members defined in the action.",
-      long_description=open("README.txt").read() + "\n" +
-                       open(os.path.join("docs", "HISTORY.txt")).read(),
-      # Get more strings from http://www.python.org/pypi?%3Aaction=list_classifiers
+      long_description=long_description,
       classifiers=[
         "Development Status :: 4 - Beta",
         "Framework :: Plone",
