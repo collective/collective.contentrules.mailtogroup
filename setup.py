@@ -25,10 +25,25 @@ setup(name='collective.contentrules.mailtogroup',
       include_package_data=True,
       zip_safe=False,
       install_requires=[
+          'plone.app.contentrules',
+          'plone.app.form >=1.1.8'
+          'plone.app.vocabularies',
+          'plone.contentrules',
+          'Products.CMFCore',
+          'Products.CMFPlone',
           'setuptools',
-          'plone.app.form>=1.1.8'
-          # -*- Extra requirements: -*-
+          'zope.component',
+          'zope.i18nmessageid',
+          'zope.interface',
+          'zope.schema',
       ],
+      extras_require={
+          'test': [
+              'Products.MailHost',
+              'Products.PloneTestCase',
+              'Products.SecureMailHost',
+          ],
+      },
       entry_points="""
       # -*- Entry points: -*-
       [z3c.autoinclude.plugin]

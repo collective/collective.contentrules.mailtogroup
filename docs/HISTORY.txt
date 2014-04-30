@@ -4,6 +4,9 @@ Changelog
 1.4dev (unreleased)
 -------------------
 
+- Fix package dependencies.
+  [hvelarde]
+
 - Added help-text for text-variable. [ida]
 
 - Added exception, if text-variable is used, but an item doesn't have a text-field.
