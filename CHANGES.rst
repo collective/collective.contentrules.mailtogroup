@@ -1,11 +1,18 @@
 Changelog
 =========
 
-1.4dev (unreleased)
+1.? (unreleased)
 -------------------
+
+- Add Brazilian Portuguese and Spanish translations.
+  [hvelarde]
 
 - Fix package dependencies.
   [hvelarde]
+
+
+1.4dev (unreleased)
+-------------------
 
 - Added help-text for text-variable. [ida]
 

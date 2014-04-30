@@ -1,0 +1,81 @@
+# Héctor Velarde <hector.velarde@gmail.com>, 2014.
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2011-04-14 11:44+0000\n"
+"PO-Revision-Date: 2014-04-30 17:43-0300\n"
+"Last-Translator: Héctor Velarde <hector.velarde@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: DOMAIN\n"
+"Project-Id-Version: \n"
+
+#: ./actions/mail.py:164
+msgid "A mail action can mail different groups and members."
+msgstr "Uma ação pode enviar mails a diferentes grupos e membros."
+
+#: ./actions/mail.py:181
+msgid "A mail action can mail different recipient."
+msgstr "Uma ação pode enviar mails a diferentes destinatários."
+
+#: ./actions/mail.py:163
+msgid "Add Mail Group Action"
+msgstr "Adicionar ação de envio de mail a um grupo"
+
+#: ./actions/mail.py:165
+msgid "Configure element"
+msgstr "Configurar elemento"
+
+#: ./actions/mail.py:180
+msgid "Edit Mail group Action"
+msgstr "Editar ação de envio de mail a um grupo"
+
+#: ./actions/mail.py:78
+msgid "Email report to the groups ${groups} and the members ${members}"
+msgstr "Relatório de envio para os grupos ${groups} e os membros ${members}"
+
+#: ./actions/mail.py:30
+msgid "Email source"
+msgstr "Remitente"
+
+#: ./actions/mail.py:44
+msgid "Group(s) to mail"
+msgstr "Enviar mail a o(s) grupo(s)"
+
+#: ./actions/mail.py:52
+msgid "Message"
+msgstr "Mensagem"
+
+#: ./actions/mail.py:24
+msgid "Subject"
+msgstr "Assunto"
+
+#: ./actions/mail.py:25
+msgid "Subject of the message"
+msgstr "Assunto do email"
+
+#: ./actions/mail.py:31
+msgid "The email address that sends the email. If no email is             provided here, it will use the portal from address."
+msgstr "O endereço de mail que envía a mensagem. Se não for informada, se usará o endereço do portal."
+
+#: ./actions/mail.py:45
+msgid "The group where you want to send this message. All             members of the group will receive an email."
+msgstr "Os grupos que receberam a mensagem. Todos os membros do grupo receberám uma cópia da mensagem."
+
+#: ./actions/mail.py:38
+msgid "The members where you want to send the e-mail message."
+msgstr "Os membros que receberám o email."
+
+#: ./actions/mail.py:53
+msgid "Type in here the message that you want to mail. Some             defined content can be replaced: ${title} will be replaced by the title             of the item. ${url} will be replaced by the URL of the item. ${text} will be replace by the body-text-field (if the item has a field named 'text') and send it as HTML with a plain-text-fallback."
+msgstr "Informa a mensagem que quer enviar. Algúns conteúdos definidos podem ser substituídos: ${title} será substituído pelo título do elemento. ${url} será substituído pela URL do elemento. ${text} será substituído pelo conteúdo do campo corpo do texto (sim o elemento tem um campo chamado 'texto') e enviado como HTML e texto sem formato."
+
+#: ./actions/mail.py:37
+msgid "User(s) to mail"
+msgstr "Enviar mail ao usuário(s)"
+
