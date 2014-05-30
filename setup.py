@@ -1,7 +1,7 @@
 from setuptools import find_packages
 from setuptools import setup
 
-version = '1.3.2'
+version = '1.5'
 long_description = (
     open('README.rst').read() + '\n' +
     open('CHANGES.rst').read()
