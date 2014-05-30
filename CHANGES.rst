@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.3.2 (2014-06-30)
+1.5 (2014-06-30)
 -------------------
 
 - Fixed tests and version numbering [kcleong]
