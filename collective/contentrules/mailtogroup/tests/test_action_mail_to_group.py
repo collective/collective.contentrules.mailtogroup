@@ -7,10 +7,11 @@ from zope.interface import implements
 
 from plone.app.contentrules.rule import Rule
 from plone.app.contentrules.tests.base import ContentRulesTestCase
-from plone.app.contentrules.tests.test_action_mail import DummyMailHost, DummyEvent
+from plone.app.contentrules.tests.test_action_mail import DummyEvent
 from plone.contentrules.engine.interfaces import IRuleStorage
 from plone.contentrules.rule.interfaces import IRuleAction, IExecutable
 from collective.contentrules.mailtogroup.actions.mail import MailGroupAction, MailGroupEditForm, MailGroupAddForm
+from collective.contentrules.mailtogroup.tests.dummymailhost import DummyMailHost
 
 from Products.CMFCore.utils import getToolByName
 
@@ -118,15 +119,13 @@ class TestMailAction(ContentRulesTestCase):
         ex = getMultiAdapter((self.folder, e, DummyEvent(self.folder.d1)),
                              IExecutable)
         ex()
-        self.failUnless(isinstance(dummyMailHost.sent[0], Message))
-        mailSent = dummyMailHost.sent[0]
-        self.assertEqual('text/plain; charset="utf-8"',
-                        mailSent.get('Content-Type'))
-        self.assertEqual("member1@dummy.org", mailSent.get('To'))
+        self.failUnless(isinstance(dummyMailHost.sent[0]['msg'], Message))
+        mailSent = dummyMailHost.sent[0]['msg']
+        self.assertTrue(mailSent.get('Content-Type').startswith('multipart/related'))
+        self.assertEqual(None, mailSent.get('To'))
         self.assertEqual("foo@bar.be", mailSent.get('From'))
-        self.assertEqual("P\xc3\xa4ge 'W\xc3\xa4lkommen' created in \
-http://nohost/plone/Members/test_user_1_/d1 !",
-                         mailSent.get_payload(decode=True))
+        self.assertIn("P=C3=A4ge \'W=C3=A4lkommen\' created in http://nohost/plone/Members/test_user=\n_1_/d1",
+            str(mailSent.get_payload()[0]))
 
     def testExecuteNoSource(self):
         self.loginAsPortalOwner()
@@ -143,22 +142,25 @@ http://nohost/plone/Members/test_user_1_/d1 !",
         # if we provide a site mail address this won't fail anymore
         sm.manage_changeProperties({'email_from_address': 'manager@portal.be'})
         ex()
-        self.failUnless(isinstance(dummyMailHost.sent[0], Message))
-        mailSent = dummyMailHost.sent[0]
-        self.assertEqual('text/plain; charset="utf-8"',
-                        mailSent.get('Content-Type'))
-        self.assertEqual("member1@dummy.org", mailSent.get('To'))
-        self.assertEqual("Site Administrator <manager@portal.be>",
-                         mailSent.get('From'))
-        self.assertEqual("Document created !",
-                         mailSent.get_payload(decode=True))
+        self.failUnless(isinstance(dummyMailHost.sent[0]['msg'], Message))
+
+        mailSent = dummyMailHost.sent[0]['msg']
+        mailTo = dummyMailHost.sent[0]['mto']
+        mailFrom = dummyMailHost.sent[0]['mfrom']
+
+        self.assertTrue(mailSent.get('Content-Type').startswith('multipart/related'))
+        self.assertIn("member1@dummy.org", mailTo)
+        self.assertIn("manager@portal.be", mailFrom)
+        self.assertIn('Document created !', str(mailSent))
 
     def testExecuteMultiGroupsAndUsers(self):
         self.loginAsPortalOwner()
         sm = getSiteManager(self.portal)
         sm.unregisterUtility(provided=IMailHost)
+
         dummyMailHost = DummyMailHost('dMailhost')
         sm.registerUtility(dummyMailHost, IMailHost)
+
         e = MailGroupAction()
         e.source = "foo@bar.be"
         e.groups = ['group1', 'group2']
@@ -167,32 +169,21 @@ http://nohost/plone/Members/test_user_1_/d1 !",
         ex = getMultiAdapter((self.folder, e, DummyEvent(self.folder.d1)),
                              IExecutable)
         ex()
-        self.assertEqual(len(dummyMailHost.sent), 4)
-        self.failUnless(isinstance(dummyMailHost.sent[0], Message))
-        mailSent = dummyMailHost.sent[0]
-        self.assertEqual('text/plain; charset="utf-8"',
-                        mailSent.get('Content-Type'))
-        self.assertEqual('default@dummy.org', mailSent.get('To'))
-        self.assertEqual('foo@bar.be', mailSent.get('From'))
-        self.assertEqual('Document created !', mailSent.get_payload(decode=True))
-        mailSent = dummyMailHost.sent[1]
-        self.assertEqual('text/plain; charset="utf-8"',
-                        mailSent.get('Content-Type'))
-        self.assertEqual('portal@dummy.org', mailSent.get('To'))
-        self.assertEqual('foo@bar.be', mailSent.get('From'))
-        self.assertEqual('Document created !', mailSent.get_payload(decode=True))
-        mailSent = dummyMailHost.sent[2]
-        self.assertEqual('text/plain; charset="utf-8"',
-                        mailSent.get('Content-Type'))
-        self.assertEqual('member1@dummy.org', mailSent.get('To'))
-        self.assertEqual('foo@bar.be', mailSent.get('From'))
-        self.assertEqual('Document created !', mailSent.get_payload(decode=True))
-        mailSent = dummyMailHost.sent[3]
-        self.assertEqual('text/plain; charset="utf-8"',
-                        mailSent.get('Content-Type'))
-        self.assertEqual('member2@dummy.org', mailSent.get('To'))
-        self.assertEqual('foo@bar.be', mailSent.get('From'))
-        self.assertEqual('Document created !', mailSent.get_payload(decode=True))
+
+        self.assertEqual(len(dummyMailHost.sent[0]['mto']), 4)
+        self.failUnless(isinstance(dummyMailHost.sent[0]['msg'], Message))
+
+        mailSent = dummyMailHost.sent[0]['msg']
+        mailTo = dummyMailHost.sent[0]['mto']
+        mailFrom = dummyMailHost.sent[0]['mfrom']
+        self.assertTrue(mailSent.get('Content-Type').startswith('multipart/related'))
+
+        self.assertEqual('foo@bar.be', mailFrom)
+        self.assertIn('default@dummy.org', mailTo)
+        self.assertIn('portal@dummy.org', mailTo)
+        self.assertIn('member1@dummy.org', mailTo)
+        self.assertIn('member2@dummy.org', mailTo)
+        self.assertIn('Document created !', str(mailSent))
 
 
 def test_suite():
