@@ -18,6 +18,7 @@ from Products.CMFPlone.utils import safe_unicode
 
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
+from plone.stringinterp.interfaces import IStringInterpolator
 
 
 class IMailGroupAction(Interface):
@@ -125,7 +126,7 @@ class MailActionExecutor(object):
             raise ComponentLookupError, 'You must have a Mailhost utility to \
 execute this action'
 
-        source = self.element.source
+        source = from_address = self.element.source
         urltool = getToolByName(aq_inner(self.context), "portal_url")
         portal = urltool.getPortalObject()
         email_charset = portal.getProperty('email_charset')
@@ -147,28 +148,23 @@ action or enter an email in the portal properties'
             event_text = safe_unicode(obj.getText())
         except:
             event_text = ''
-        message = self.element.message.replace("${url}", event_url)
-        message = message.replace("${title}", event_title)
-        message = message.replace("${namedirectory}", self.context.Title())
-        message = message.replace("${text}", event_text)
-        
-        subject = self.element.subject.replace("${url}", event_url)
-        subject = subject.replace("${title}", event_title)
-        subject = subject.replace("${namedirectory}", self.context.Title())
+        interpolator = IStringInterpolator(obj)
+        message = "\n%s" % interpolator(self.element.message)
+        subject = interpolator(self.element.subject)
 
         # Convert set of recipients to a list:
         list_of_recipients = list(recipients)
-        
+        if not list_of_recipients:
+            return False
         # Prepare multi-part-message to send html with plain-text-fallback-message,
         # for non-html-capable-mail-clients.
         # Thanks to Peter Bengtsson for valuable information about this in this post:
         # http://www.peterbe.com/plog/zope-html-emails
-
         mime_msg = MIMEMultipart('related')
         mime_msg['Subject'] = subject
         mime_msg['From'] = source
-        mime_msg['To'] = from_address
-        mime_msg['Bcc'] =  ', '.join( list_of_recipients )
+        # mime_msg['To'] = ""
+        mime_msg['Bcc'] = ', '.join(list_of_recipients)
         mime_msg.preamble = 'This is a multi-part message in MIME format.'
 
         # Encapsulate the plain and HTML versions of the message body
@@ -193,9 +189,10 @@ action or enter an email in the portal properties'
         # Finally send mail.
         # Plone-4
         try:
-            mailhost.send(mime_msg.as_string())
+            mailhost.send(mime_msg)
+
         # Plone-3
-        except: 
+        except:
             mailhost.secureSend(mime_msg.as_string())
 
         return True
