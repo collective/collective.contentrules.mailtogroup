@@ -6,7 +6,7 @@ Changelog
 
 - Upcoming changes here
 
- 
+
 1.5 (2014-06-30)
 -------------------
 
@@ -21,9 +21,6 @@ Changelog
 
 - Fix package dependencies.
   [hvelarde]
-
-- Fixed source assignment and added string interpolation support
-  [cekk]
 
 
 
