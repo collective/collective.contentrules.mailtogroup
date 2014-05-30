@@ -1,12 +1,13 @@
 # -*- coding: UTF-8 -*-
 
-from email.MIMEText import MIMEText
+from email.Message import Message
 from zope.component import getUtility, getMultiAdapter, getSiteManager
 from zope.component.interfaces import IObjectEvent
 from zope.interface import implements
 
 from plone.app.contentrules.rule import Rule
 from plone.app.contentrules.tests.base import ContentRulesTestCase
+from plone.app.contentrules.tests.test_action_mail import DummyMailHost, DummyEvent
 from plone.contentrules.engine.interfaces import IRuleStorage
 from plone.contentrules.rule.interfaces import IRuleAction, IExecutable
 from collective.contentrules.mailtogroup.actions.mail import MailGroupAction, MailGroupEditForm, MailGroupAddForm
@@ -14,30 +15,8 @@ from collective.contentrules.mailtogroup.actions.mail import MailGroupAction, Ma
 from Products.CMFCore.utils import getToolByName
 
 from Products.MailHost.interfaces import IMailHost
-from Products.SecureMailHost.SecureMailHost import SecureMailHost
 
 from Products.PloneTestCase.setup import default_user
-
-
-# basic test structure copied from plone.app.contentrules test_action_mail.py
-
-
-class DummyEvent(object):
-    implements(IObjectEvent)
-
-    def __init__(self, object):
-        self.object = object
-
-
-class DummySecureMailHost(SecureMailHost):
-    meta_type = 'Dummy secure Mail Host'
-
-    def __init__(self, id):
-        self.id = id
-        self.sent = []
-
-    def _send(self, mfrom, mto, messageText, debug=False):
-        self.sent.append(messageText)
 
 
 class TestMailAction(ContentRulesTestCase):
@@ -130,7 +109,7 @@ class TestMailAction(ContentRulesTestCase):
         self.loginAsPortalOwner()
         sm = getSiteManager(self.portal)
         sm.unregisterUtility(provided=IMailHost)
-        dummyMailHost = DummySecureMailHost('dMailhost')
+        dummyMailHost = DummyMailHost('dMailhost')
         sm.registerUtility(dummyMailHost, IMailHost)
         e = MailGroupAction()
         e.source = "foo@bar.be"
@@ -139,7 +118,7 @@ class TestMailAction(ContentRulesTestCase):
         ex = getMultiAdapter((self.folder, e, DummyEvent(self.folder.d1)),
                              IExecutable)
         ex()
-        self.failUnless(isinstance(dummyMailHost.sent[0], MIMEText))
+        self.failUnless(isinstance(dummyMailHost.sent[0], Message))
         mailSent = dummyMailHost.sent[0]
         self.assertEqual('text/plain; charset="utf-8"',
                         mailSent.get('Content-Type'))
@@ -153,7 +132,7 @@ http://nohost/plone/Members/test_user_1_/d1 !",
         self.loginAsPortalOwner()
         sm = getSiteManager(self.portal)
         sm.unregisterUtility(provided=IMailHost)
-        dummyMailHost = DummySecureMailHost('dMailhost')
+        dummyMailHost = DummyMailHost('dMailhost')
         sm.registerUtility(dummyMailHost, IMailHost)
         e = MailGroupAction()
         e.groups = ['group1', ]
@@ -164,7 +143,7 @@ http://nohost/plone/Members/test_user_1_/d1 !",
         # if we provide a site mail address this won't fail anymore
         sm.manage_changeProperties({'email_from_address': 'manager@portal.be'})
         ex()
-        self.failUnless(isinstance(dummyMailHost.sent[0], MIMEText))
+        self.failUnless(isinstance(dummyMailHost.sent[0], Message))
         mailSent = dummyMailHost.sent[0]
         self.assertEqual('text/plain; charset="utf-8"',
                         mailSent.get('Content-Type'))
@@ -178,7 +157,7 @@ http://nohost/plone/Members/test_user_1_/d1 !",
         self.loginAsPortalOwner()
         sm = getSiteManager(self.portal)
         sm.unregisterUtility(provided=IMailHost)
-        dummyMailHost = DummySecureMailHost('dMailhost')
+        dummyMailHost = DummyMailHost('dMailhost')
         sm.registerUtility(dummyMailHost, IMailHost)
         e = MailGroupAction()
         e.source = "foo@bar.be"
@@ -189,7 +168,7 @@ http://nohost/plone/Members/test_user_1_/d1 !",
                              IExecutable)
         ex()
         self.assertEqual(len(dummyMailHost.sent), 4)
-        self.failUnless(isinstance(dummyMailHost.sent[0], MIMEText))
+        self.failUnless(isinstance(dummyMailHost.sent[0], Message))
         mailSent = dummyMailHost.sent[0]
         self.assertEqual('text/plain; charset="utf-8"',
                         mailSent.get('Content-Type'))

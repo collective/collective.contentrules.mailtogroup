@@ -19,6 +19,9 @@ Changelog
 - Added exception, if text-variable is used, but an item doesn't have a text-field.
   Concerns actions/mail.py [ida]
 
+- Fixed source address assignment. Now doesn't break the rule execution[cekk]
+
+- Enabled the use of string interpolator for string substitutions [cekk]
 
 1.3 (2012-02-15)
 -------------------
