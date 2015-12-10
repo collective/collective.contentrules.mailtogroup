@@ -4,7 +4,8 @@ Changelog
 1.5.1 (unreleased)
 -------------------
 
-- Upcoming changes here
+- Use plone.app.contentrules.ManageContentRules permission instead of cmf.ManagePortal.
+  [fulv]
 
 
 1.5 (2014-06-30)
