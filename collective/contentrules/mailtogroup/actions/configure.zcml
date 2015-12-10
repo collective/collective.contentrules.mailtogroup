@@ -16,14 +16,14 @@
     for="plone.app.contentrules.browser.interfaces.IRuleActionAdding"
     name="plone.actions.MailGroup"
     class=".mail.MailGroupAddForm"
-    permission="cmf.ManagePortal"
+    permission="plone.app.contentrules.ManageContentRules"
     />
 
   <browser:page
     for="collective.contentrules.mailtogroup.actions.mail.IMailGroupAction"
     name="edit"
     class=".mail.MailGroupEditForm"
-    permission="cmf.ManagePortal"
+    permission="plone.app.contentrules.ManageContentRules"
     />
 
   <plone:ruleAction
@@ -37,5 +37,5 @@
     schema=".mail.IMailGroupAction"
     factory=".mail.MailGroupAction"
     />
-         
+
 </configure>
