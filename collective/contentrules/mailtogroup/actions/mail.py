@@ -19,6 +19,7 @@ from Products.CMFPlone.utils import safe_unicode
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 from plone.stringinterp.interfaces import IStringInterpolator
+from Products.CMFPlone.interfaces import IMailSchema
 
 
 class IMailGroupAction(Interface):
@@ -208,6 +209,7 @@ class MailGroupAddForm(AddForm):
     form_name = _(u"Configure element")
     form_fields['groups'].custom_widget = UberMultiSelectionWidget
     form_fields['members'].custom_widget = UberMultiSelectionWidget
+    schema = IMailSchema
 
     def create(self, data):
         a = MailGroupAction()
@@ -225,3 +227,4 @@ class MailGroupEditForm(EditForm):
     form_name = _(u"Configure element")
     form_fields['groups'].custom_widget = UberMultiSelectionWidget
     form_fields['members'].custom_widget = UberMultiSelectionWidget
+    schema = IMailSchema
