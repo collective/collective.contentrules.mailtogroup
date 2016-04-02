@@ -7,7 +7,7 @@
 
   <include package="plone.contentrules" />
   <include package="plone.contentrules" file="meta.zcml" />
-
+  <include package="plone.principalsource" />
 
   <!-- Email action definition -->
   <adapter factory=".mail.MailActionExecutor" />
@@ -15,14 +15,14 @@
   <browser:page
     for="plone.app.contentrules.browser.interfaces.IRuleActionAdding"
     name="plone.actions.MailGroup"
-    class=".mail.MailGroupAddForm"
+    class=".mail.MailGroupAddFormView"
     permission="plone.app.contentrules.ManageContentRules"
     />
 
   <browser:page
     for="collective.contentrules.mailtogroup.actions.mail.IMailGroupAction"
     name="edit"
-    class=".mail.MailGroupEditForm"
+    class=".mail.MailGroupEditFormView"
     permission="plone.app.contentrules.ManageContentRules"
     />
 
@@ -31,7 +31,7 @@
     title="Send email to groups and members"
     description="Send an email on the triggering object."
     for="*"
-    event="zope.component.interfaces.IObjectEvent"
+    event="*"
     addview="plone.actions.MailGroup"
     editview="edit"
     schema=".mail.IMailGroupAction"

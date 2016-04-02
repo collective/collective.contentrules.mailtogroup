@@ -1,67 +1,73 @@
+import logging
 from Acquisition import aq_inner
-from OFS.SimpleItem import SimpleItem
-from zope.component import adapts
-from zope.component.interfaces import ComponentLookupError
-from zope.interface import Interface, implements
-from zope.formlib import form
-from zope import schema
-
-from plone.app.contentrules.browser.formhelper import AddForm, EditForm
-from plone.app.vocabularies.groups import GroupsSource
-from plone.app.vocabularies.users import UsersSource
-from plone.app.form.widgets.uberselectionwidget import UberMultiSelectionWidget
-from plone.contentrules.rule.interfaces import IRuleElementData, IExecutable
-
-from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone import PloneMessageFactory as _
-from Products.CMFPlone.utils import safe_unicode
-
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
+from plone.app.contentrules.actions import ActionAddForm, ActionEditForm
+from plone.app.contentrules.browser.formhelper import ContentRuleFormWrapper
+from plone.app.z3cform.widget import SelectWidget
+from plone.autoform import directives
+from plone.contentrules.rule.interfaces import IRuleElementData, IExecutable
+from plone.registry.interfaces import IRegistry
 from plone.stringinterp.interfaces import IStringInterpolator
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone import PloneMessageFactory as _
 from Products.CMFPlone.interfaces import IMailSchema
+from Products.CMFPlone.utils import safe_unicode
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+from Products.statusmessages.interfaces import IStatusMessage
+from OFS.SimpleItem import SimpleItem
+from zope import schema
+from zope.component import adapts
+from zope.component import getUtility
+from zope.component.interfaces import ComponentLookupError
+from zope.globalrequest import getRequest
+from zope.interface import Interface, implements
+
+logger = logging.getLogger(__file__)
 
 
 class IMailGroupAction(Interface):
     """Definition of the configuration available for a mail action
     """
     subject = schema.TextLine(
-        title = _(u"Subject"),
-        description = _(u"Subject of the message"),
-        required = True
+        title=_(u"Subject"),
+        description=_(u"Subject of the message"),
+        required=True
         )
 
     source = schema.TextLine(
-        title = _(u"Email source"),
-        description = _("The email address that sends the email. If no email is \
+        title=_(u"Email source"),
+        description=_("The email address that sends the email. If no email is \
             provided here, it will use the portal from address."),
-         required = False
-         )
-
-    members = schema.List(
-        title = _(u"User(s) to mail"),
-        description = _("The members where you want to send the e-mail message."),
-        value_type = schema.Choice(source=UsersSource),
-        required = False
+        required=False
         )
 
+    directives.widget('members', SelectWidget)
+    members = schema.List(
+        title=_(u"User(s) to mail"),
+        description=_("The members where you want to send the e-mail message."),
+        value_type=schema.Choice(vocabulary=u"plone.principalsource.Users"),
+        required=False
+        )
+
+    directives.widget('groups', SelectWidget)
     groups = schema.List(
-        title = _(u"Group(s) to mail"),
-        description = _("The group where you want to send this message. All \
+        title=_(u"Group(s) to mail"),
+        description=_("The group where you want to send this message. All \
             members of the group will receive an email."),
-        value_type = schema.Choice(source=GroupsSource),
-        required = False
+        value_type=schema.Choice(vocabulary=u"plone.principalsource.Groups"),
+        required=False
         )
 
     message = schema.Text(
-        title = _(u"Message"),
-        description = _(u"Type in here the message that you want to mail. Some \
+        title=_(u"Message"),
+        description=_(u"Type in here the message that you want to mail. Some \
             defined content can be replaced: ${title} will be replaced by the title \
             of the item. ${url} will be replaced by the URL of the item. \
             ${namedirectory} will be replaced by the Title of the folder the rule is applied to. \
             ${text} will be replace by the body-text-field (if the item has a field named 'text') \
             and send it as HTML with a plain-text-fallback."),
-        required = True
+        required=True
         )
 
 
@@ -81,10 +87,11 @@ class MailGroupAction(SimpleItem):
 
     @property
     def summary(self):
-        groups = ', '.join(self.groups)
-        members = ', '.join(self.members)
-        return _(u"Email report to the groups ${groups} and the members \
-${members}", mapping=dict(groups=groups, members=members))
+        groups = self.groups and 'the groups ' + ', '.join(self.groups) or ''
+        members = self.members and 'the members ' + ', '.join(self.members) or ''
+        both = (groups and members) and ' and ' or ''
+        return _(u"Email report to ${groups} ${both} ${members}",
+                 mapping=dict(groups=groups, both=both, members=members))
 
 
 class MailActionExecutor(object):
@@ -97,16 +104,50 @@ class MailActionExecutor(object):
         self.context = context
         self.element = element
         self.event = event
+        registry = getUtility(IRegistry)
+        self.mail_settings = registry.forInterface(IMailSchema,
+                                                   prefix='plone')
 
     def __call__(self):
+        mailhost = getToolByName(aq_inner(self.context), "MailHost")
+        if not mailhost:
+            raise ComponentLookupError('You must have a Mailhost utility to \
+execute this action')
+
+        email_charset = self.mail_settings.email_charset
+
+        obj = self.event.object
+
+        interpolator = IStringInterpolator(obj)
+
+        source = self.element.source
+        if source:
+            source = interpolator(source).strip()
+
+        if not source:
+            # no source provided, looking for the site wide from email
+            # address
+            from_address = self.mail_settings.email_from_address
+            if not from_address:
+                # the mail can't be sent. Try to inform the user
+                request = getRequest()
+                if request:
+                    messages = IStatusMessage(request)
+                    msg = _(u"Error sending email from content rule. You must "
+                            "provide a source address for mail "
+                            "actions or enter an email in the portal properties")
+                    messages.add(msg, type=u"error")
+                return False
+            from_name = self.mail_settings.email_from_name.strip('"')
+            source = "%s <%s>" % (from_name, from_address)
+
         portal_membership = getToolByName(aq_inner(self.context), 'portal_membership')
         portal_groups = getToolByName(aq_inner(self.context), 'portal_groups')
 
         members = set(self.element.members)
-        
+
         recipients = set()
 
- 
         for groupId in self.element.groups:
             group = portal_groups.getGroupById(groupId)
 
@@ -122,26 +163,6 @@ class MailActionExecutor(object):
             if member and member.getProperty('email'):
                 recipients.update([member.getProperty('email'), ])
 
-        mailhost = getToolByName(aq_inner(self.context), "MailHost")
-        if not mailhost:
-            raise ComponentLookupError, 'You must have a Mailhost utility to \
-execute this action'
-
-        source = from_address = self.element.source
-        urltool = getToolByName(aq_inner(self.context), "portal_url")
-        portal = urltool.getPortalObject()
-        email_charset = portal.getProperty('email_charset')
-        if not source:
-            # no source provided, looking for the site wide from email
-            # address
-            from_address = portal.getProperty('email_from_address')
-            if not from_address:
-                raise ValueError, 'You must provide a source address for this \
-action or enter an email in the portal properties'
-            from_name = portal.getProperty('email_from_name')
-            source = "%s <%s>" % (from_name, from_address)
-
-        obj = self.event.object
         event_title = safe_unicode(obj.Title())
         event_url = obj.absolute_url()
         # Not all items have a text-field:
@@ -149,7 +170,6 @@ action or enter an email in the portal properties'
             event_text = safe_unicode(obj.getText())
         except:
             event_text = ''
-        interpolator = IStringInterpolator(obj)
         message = "\n%s" % interpolator(self.element.message)
         subject = interpolator(self.element.subject)
 
@@ -199,32 +219,35 @@ action or enter an email in the portal properties'
         return True
 
 
-class MailGroupAddForm(AddForm):
+class MailGroupAddForm(ActionAddForm):
     """
-    An add form for the mail action
+    An add form for the mail group action
     """
-    form_fields = form.FormFields(IMailGroupAction)
+    schema = IMailGroupAction
     label = _(u"Add Mail Group Action")
     description = _(u"A mail action can mail different groups and members.")
     form_name = _(u"Configure element")
-    form_fields['groups'].custom_widget = UberMultiSelectionWidget
-    form_fields['members'].custom_widget = UberMultiSelectionWidget
-    schema = IMailSchema
-
-    def create(self, data):
-        a = MailGroupAction()
-        form.applyChanges(a, self.form_fields, data)
-        return a
+    Type = MailGroupAction
+    # custom template will allow us to add help text
+    template = ViewPageTemplateFile('templates/mail.pt')
 
 
-class MailGroupEditForm(EditForm):
+class MailGroupAddFormView(ContentRuleFormWrapper):
+    form = MailGroupAddForm
+
+
+class MailGroupEditForm(ActionEditForm):
     """
-    An edit form for the mail action
+    An edit form for the mail group action
     """
-    form_fields = form.FormFields(IMailGroupAction)
+    schema = IMailGroupAction
     label = _(u"Edit Mail group Action")
     description = _(u"A mail action can mail different recipient.")
     form_name = _(u"Configure element")
-    form_fields['groups'].custom_widget = UberMultiSelectionWidget
-    form_fields['members'].custom_widget = UberMultiSelectionWidget
-    schema = IMailSchema
+
+    # custom template will allow us to add help text
+    template = ViewPageTemplateFile('templates/mail.pt')
+
+
+class MailGroupEditFormView(ContentRuleFormWrapper):
+    form = MailGroupEditForm

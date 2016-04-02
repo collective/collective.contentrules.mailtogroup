@@ -18,6 +18,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.MailHost.interfaces import IMailHost
 
 from Products.PloneTestCase.setup import default_user
+from plone.app.testing.interfaces import SITE_OWNER_NAME
 
 
 class TestMailAction(ContentRulesTestCase):
@@ -31,7 +32,7 @@ class TestMailAction(ContentRulesTestCase):
         # set up default user and portal owner
         member = self.portal.portal_membership.getMemberById(default_user)
         member.setMemberProperties(dict(email="default@dummy.org"))
-        member = self.portal.portal_membership.getMemberById('portal_owner')
+        member = self.portal.portal_membership.getMemberById(SITE_OWNER_NAME)
         member.setMemberProperties(dict(email="portal@dummy.org"))
 
         membership = getToolByName(self.portal, 'portal_membership')
