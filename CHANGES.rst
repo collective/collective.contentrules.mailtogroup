@@ -1,6 +1,18 @@
 Changelog
 =========
 
+2.0 (unreleased)
+----------------
+
+- Use SelectWidget from plone.app.z3cform.widget instead of UberMultiSelectionWidget from plone.app.form.widgets.uberselectionwidget, because the former is now standard in Plone 5.
+  [fulv]
+
+- Use named vocabularies from plone.principalsource instead of plone.app.vocabularies.
+  [fulv]
+
+- Get rid of formlib and achieve parity with plone.app.contentrules.actions.mail for Plone 5.
+  [fulv]
+
 1.5.1 (unreleased)
 -------------------
 
