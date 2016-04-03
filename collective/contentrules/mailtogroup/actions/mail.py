@@ -33,14 +33,14 @@ class IMailGroupAction(Interface):
         title=_(u"Subject"),
         description=_(u"Subject of the message"),
         required=True
-        )
+    )
 
     source = schema.TextLine(
         title=_(u"Email source"),
         description=_("The email address that sends the email. If no email is \
             provided here, it will use the portal from address."),
         required=False
-        )
+    )
 
     directives.widget('members', SelectWidget)
     members = schema.List(
@@ -48,7 +48,7 @@ class IMailGroupAction(Interface):
         description=_("The members where you want to send the e-mail message."),
         value_type=schema.Choice(vocabulary=u"plone.principalsource.Users"),
         required=False
-        )
+    )
 
     directives.widget('groups', SelectWidget)
     groups = schema.List(
@@ -57,7 +57,7 @@ class IMailGroupAction(Interface):
             members of the group will receive an email."),
         value_type=schema.Choice(vocabulary=u"plone.principalsource.Groups"),
         required=False
-        )
+    )
 
     message = schema.Text(
         title=_(u"Message"),
@@ -68,7 +68,7 @@ class IMailGroupAction(Interface):
             ${text} will be replace by the body-text-field (if the item has a field named 'text') \
             and send it as HTML with a plain-text-fallback."),
         required=True
-        )
+    )
 
 
 class MailGroupAction(SimpleItem):
@@ -163,13 +163,6 @@ execute this action')
             if member and member.getProperty('email'):
                 recipients.update([member.getProperty('email'), ])
 
-        event_title = safe_unicode(obj.Title())
-        event_url = obj.absolute_url()
-        # Not all items have a text-field:
-        try:
-            event_text = safe_unicode(obj.getText())
-        except:
-            event_text = ''
         message = "\n%s" % interpolator(self.element.message)
         subject = interpolator(self.element.subject)
 

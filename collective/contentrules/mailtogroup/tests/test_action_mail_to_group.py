@@ -3,15 +3,16 @@
 from email.Message import Message
 from zope.component import getUtility, getMultiAdapter, getSiteManager
 from zope.component.interfaces import IObjectEvent
-from zope.interface import implements
 
 from plone.app.contentrules.rule import Rule
 from plone.app.contentrules.tests.base import ContentRulesTestCase
 from plone.app.contentrules.tests.test_action_mail import DummyEvent
 from plone.contentrules.engine.interfaces import IRuleStorage
 from plone.contentrules.rule.interfaces import IRuleAction, IExecutable
-from collective.contentrules.mailtogroup.actions.mail import MailGroupAction, MailGroupEditForm, MailGroupAddForm
-from collective.contentrules.mailtogroup.tests.dummymailhost import DummyMailHost
+from collective.contentrules.mailtogroup.actions.mail import MailGroupAction
+from collective.contentrules.mailtogroup.actions.mail import MailGroupEditForm
+from collective.contentrules.mailtogroup.actions.mail import MailGroupAddForm
+from collective.contentrules.mailtogroup.tests.dummymailhost import DummyMailHost #noqa
 
 from Products.CMFCore.utils import getToolByName
 
@@ -27,7 +28,7 @@ class TestMailAction(ContentRulesTestCase):
         self.setRoles(('Manager', ))
         self.portal.invokeFactory('Folder', 'target')
         self.folder.invokeFactory('Document', 'd1',
-            title=unicode('Wälkommen', 'utf-8'))
+                                  title=unicode('Wälkommen', 'utf-8'))
 
         # set up default user and portal owner
         member = self.portal.portal_membership.getMemberById(default_user)
@@ -126,7 +127,7 @@ class TestMailAction(ContentRulesTestCase):
         self.assertEqual(None, mailSent.get('To'))
         self.assertEqual("foo@bar.be", mailSent.get('From'))
         self.assertIn("P=C3=A4ge \'W=C3=A4lkommen\' created in http://nohost/plone/Members/test_user=\n_1_/d1",
-            str(mailSent.get_payload()[0]))
+                      str(mailSent.get_payload()[0]))
 
     def testExecuteNoSource(self):
         self.loginAsPortalOwner()
