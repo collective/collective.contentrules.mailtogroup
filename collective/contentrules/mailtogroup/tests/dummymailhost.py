@@ -1,5 +1,3 @@
-from persistent.list import PersistentList
-
 from Products.CMFPlone.tests.utils import MockMailHost as MailBase
 from Products.MailHost.MailHost import _mungeHeaders
 

@@ -1,6 +1,4 @@
 # -*- coding: UTF-8 -*-
-import re
-
 from collective.contentrules.mailtogroup.actions.mail import MailGroupAction
 from collective.contentrules.mailtogroup.actions.mail import MailGroupAddFormView
 from collective.contentrules.mailtogroup.actions.mail import MailGroupEditFormView
@@ -23,7 +21,6 @@ from Products.PloneTestCase.setup import default_user
 from zope.component import getMultiAdapter
 from zope.component import getSiteManager
 from zope.component import getUtility
-from zope.component.interfaces import IObjectEvent
 
 
 class TestMailToGroupFixture(PloneTestCaseFixture):
