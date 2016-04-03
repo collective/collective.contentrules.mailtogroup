@@ -12,7 +12,6 @@ from plone.stringinterp.interfaces import IStringInterpolator
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone import PloneMessageFactory as _
 from Products.CMFPlone.interfaces import IMailSchema
-from Products.CMFPlone.utils import safe_unicode
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.statusmessages.interfaces import IStatusMessage
 from OFS.SimpleItem import SimpleItem
@@ -141,6 +140,28 @@ execute this action')
             from_name = self.mail_settings.email_from_name.strip('"')
             source = "%s <%s>" % (from_name, from_address)
 
+        recipients = self.get_recipients()
+
+        # prepend interpolated message with \n to avoid interpretation
+        # of first line as header
+        message = "\n%s" % interpolator(self.element.message)
+
+        subject = interpolator(self.element.subject)
+
+        mime_msg = self.create_mime_msg(recipients, message, subject, source, email_charset)
+
+        # Finally send mail.
+        # Plone-4
+        try:
+            mailhost.send(mime_msg)
+
+        # Plone-3
+        except:
+            mailhost.secureSend(mime_msg.as_string())
+
+        return True
+
+    def get_recipients(self):
         portal_membership = getToolByName(aq_inner(self.context), 'portal_membership')
         portal_groups = getToolByName(aq_inner(self.context), 'portal_groups')
 
@@ -163,9 +184,9 @@ execute this action')
             if member and member.getProperty('email'):
                 recipients.update([member.getProperty('email'), ])
 
-        message = "\n%s" % interpolator(self.element.message)
-        subject = interpolator(self.element.subject)
+        return recipients
 
+    def create_mime_msg(self, recipients, message, subject, source, email_charset):
         # Convert set of recipients to a list:
         list_of_recipients = list(recipients)
         if not list_of_recipients:
@@ -200,16 +221,7 @@ execute this action')
         msg_txt = MIMEText(message, _subtype='html', _charset=email_charset)
         msgAlternative.attach(msg_txt)
 
-        # Finally send mail.
-        # Plone-4
-        try:
-            mailhost.send(mime_msg)
-
-        # Plone-3
-        except:
-            mailhost.secureSend(mime_msg.as_string())
-
-        return True
+        return mime_msg
 
 
 class MailGroupAddForm(ActionAddForm):

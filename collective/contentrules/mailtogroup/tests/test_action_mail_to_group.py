@@ -12,7 +12,7 @@ from plone.contentrules.rule.interfaces import IRuleAction, IExecutable
 from collective.contentrules.mailtogroup.actions.mail import MailGroupAction
 from collective.contentrules.mailtogroup.actions.mail import MailGroupEditForm
 from collective.contentrules.mailtogroup.actions.mail import MailGroupAddForm
-from collective.contentrules.mailtogroup.tests.dummymailhost import DummyMailHost #noqa
+from collective.contentrules.mailtogroup.tests.dummymailhost import DummyMailHost  # noqa
 
 from Products.CMFCore.utils import getToolByName
 
