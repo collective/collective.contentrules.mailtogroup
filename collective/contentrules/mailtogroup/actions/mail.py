@@ -113,17 +113,17 @@ class MailActionExecutor(object):
             raise ComponentLookupError('You must have a Mailhost utility to \
 execute this action')
 
-        email_charset = self.mail_settings.email_charset
+        self.email_charset = self.mail_settings.email_charset
 
         obj = self.event.object
 
         interpolator = IStringInterpolator(obj)
 
-        source = self.element.source
-        if source:
-            source = interpolator(source).strip()
+        self.source = self.element.source
+        if self.source:
+            self.source = interpolator(self.source).strip()
 
-        if not source:
+        if not self.source:
             # no source provided, looking for the site wide from email
             # address
             from_address = self.mail_settings.email_from_address
@@ -138,17 +138,17 @@ execute this action')
                     messages.add(msg, type=u"error")
                 return False
             from_name = self.mail_settings.email_from_name.strip('"')
-            source = "%s <%s>" % (from_name, from_address)
+            self.source = "%s <%s>" % (from_name, from_address)
 
-        recipients = self.get_recipients()
+        self.recipients = self.get_recipients()
 
         # prepend interpolated message with \n to avoid interpretation
         # of first line as header
-        message = "\n%s" % interpolator(self.element.message)
+        self.message = "\n%s" % interpolator(self.element.message)
 
-        subject = interpolator(self.element.subject)
+        self.subject = interpolator(self.element.subject)
 
-        mime_msg = self.create_mime_msg(recipients, message, subject, source, email_charset)
+        mime_msg = self.create_mime_msg()
 
         # Finally send mail.
         # Plone-4
@@ -165,7 +165,10 @@ execute this action')
         portal_membership = getToolByName(aq_inner(self.context), 'portal_membership')
         portal_groups = getToolByName(aq_inner(self.context), 'portal_groups')
 
-        members = set(self.element.members)
+        members = set()
+
+        if self.element.members:
+            members = set(self.element.members)
 
         recipients = set()
 
@@ -186,9 +189,9 @@ execute this action')
 
         return recipients
 
-    def create_mime_msg(self, recipients, message, subject, source, email_charset):
+    def create_mime_msg(self):
         # Convert set of recipients to a list:
-        list_of_recipients = list(recipients)
+        list_of_recipients = list(self.recipients)
         if not list_of_recipients:
             return False
         # Prepare multi-part-message to send html with plain-text-fallback-message,
@@ -196,8 +199,8 @@ execute this action')
         # Thanks to Peter Bengtsson for valuable information about this in this post:
         # http://www.peterbe.com/plog/zope-html-emails
         mime_msg = MIMEMultipart('related')
-        mime_msg['Subject'] = subject
-        mime_msg['From'] = source
+        mime_msg['Subject'] = self.subject
+        mime_msg['From'] = self.source
         # mime_msg['To'] = ""
         mime_msg['Bcc'] = ', '.join(list_of_recipients)
         mime_msg.preamble = 'This is a multi-part message in MIME format.'
@@ -210,15 +213,15 @@ execute this action')
 
         # Convert html-message to plain text.
         transforms = getToolByName(aq_inner(self.context), 'portal_transforms')
-        stream = transforms.convertTo('text/plain', message, mimetype='text/html')
+        stream = transforms.convertTo('text/plain', self.message, mimetype='text/html')
         body_plain = stream.getData().strip()
 
         # We attach the plain text first, the order is mandatory.
-        msg_txt = MIMEText(body_plain, _subtype='plain', _charset=email_charset)
+        msg_txt = MIMEText(body_plain, _subtype='plain', _charset=self.email_charset)
         msgAlternative.attach(msg_txt)
 
         # After that, attach html.
-        msg_txt = MIMEText(message, _subtype='html', _charset=email_charset)
+        msg_txt = MIMEText(self.message, _subtype='html', _charset=self.email_charset)
         msgAlternative.attach(msg_txt)
 
         return mime_msg

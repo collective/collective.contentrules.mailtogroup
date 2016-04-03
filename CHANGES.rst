@@ -13,6 +13,13 @@ Changelog
 - Get rid of formlib and achieve parity with plone.app.contentrules.actions.mail for Plone 5.
   [fulv]
 
+- Do not raise a ValueError if there is no email_from_address or source, only add an IStatusMessage.
+  [fulv]
+
+- Allow any event for this action, not just IObjectEvent.
+  [fulv]
+
+
 1.5.1 (unreleased)
 -------------------
 
