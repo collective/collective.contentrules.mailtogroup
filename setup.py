@@ -35,8 +35,6 @@ setup(name='collective.contentrules.mailtogroup',
       zip_safe=False,
       install_requires=[
           'plone.app.contentrules',
-          'plone.app.form >=1.1.8'
-          'plone.app.vocabularies',
           'plone.contentrules',
           'plone.principalsource',
           'Products.CMFCore',
