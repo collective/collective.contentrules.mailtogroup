@@ -4,6 +4,10 @@ Changelog
 1.5.1 (unreleased)
 -------------------
 
+- Drop support for Plone 4.0 and Plone 4.1.
+  Package may work, but we are no longer testing against these versions as Python 2.6 is no longer supported on code analysis.
+  [hvelarde]
+
 - Use plone.app.contentrules.ManageContentRules permission instead of cmf.ManagePortal.
   [fulv]
 
