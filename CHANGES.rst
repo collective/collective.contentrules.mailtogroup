@@ -4,6 +4,9 @@ Changelog
 2.0 (unreleased)
 ----------------
 
+- Supports Plone 5.x and Plone 4.3.x.  Use 1.x series for older versions of Plone.
+  [fulv]
+
 - Use SelectWidget from plone.app.z3cform.widget instead of UberMultiSelectionWidget from plone.app.form.widgets.uberselectionwidget, because the former is now standard in Plone 5.
   [fulv]
 

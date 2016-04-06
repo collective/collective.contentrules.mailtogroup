@@ -36,9 +36,15 @@ When searching for users and groups click in the corresponding text fields, and
 a pop-up menu will start showing available names.  Optionally, type the first few
 letters in order to filter.
 
-UberMultiSelectionWidget
-========================
+SelectWidget
+============
+
 This content rule uses the Select2 widget from plone.app.widgets.
+
+Compatibility
+=============
+The 2.x series is compatible with Plone 5.x and Plone 4.3.x.
+For earlier versions of Plone use the 1.x series.
 
 Credits
 =======

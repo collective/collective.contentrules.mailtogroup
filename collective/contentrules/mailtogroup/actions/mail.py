@@ -145,20 +145,11 @@ execute this action')
         # prepend interpolated message with \n to avoid interpretation
         # of first line as header
         self.message = "\n%s" % interpolator(self.element.message)
-
         self.subject = interpolator(self.element.subject)
-
         mime_msg = self.create_mime_msg()
 
         # Finally send mail.
-        # Plone-4
-        try:
-            mailhost.send(mime_msg)
-
-        # Plone-3
-        except:
-            mailhost.secureSend(mime_msg.as_string())
-
+        mailhost.send(mime_msg)
         return True
 
     def get_recipients(self):
