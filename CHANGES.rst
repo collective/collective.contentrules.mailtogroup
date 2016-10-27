@@ -1,10 +1,13 @@
 Changelog
 =========
 
-1.5.1 (unreleased)
+1.6 (unreleased)
 -------------------
 
-- Drop support for Plone 4.0 and Plone 4.1.
+- Add support for Plone 5.0 and 5.1.  On Plone 5.x we use z3c.form instead of formlib.
+  [fulv]
+
+- Drop support for Plone 4.0, Plone 4.1 and Plone 4.2.
   Package may work, but we are no longer testing against these versions as Python 2.6 is no longer supported on code analysis.
   [hvelarde]
 

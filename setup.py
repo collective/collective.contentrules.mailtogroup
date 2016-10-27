@@ -1,7 +1,7 @@
 from setuptools import find_packages
 from setuptools import setup
 
-version = '1.5'
+version = '1.6'
 long_description = (
     open('README.rst').read() + '\n' +
     open('CHANGES.rst').read()
@@ -14,8 +14,9 @@ setup(name='collective.contentrules.mailtogroup',
       classifiers=[
           'Development Status :: 5 - Production/Stable',
           'Environment :: Web Environment',
-          'Framework :: Plone :: 4.2',
           'Framework :: Plone :: 4.3',
+          'Framework :: Plone :: 5.0',
+          'Framework :: Plone :: 5.1',
           'Framework :: Plone',
           'Intended Audience :: System Administrators',
           'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
@@ -24,7 +25,7 @@ setup(name='collective.contentrules.mailtogroup',
           'Programming Language :: Python',
           'Topic :: Software Development :: Libraries :: Python Modules',
       ],
-      keywords='',
+      keywords='plone automatic content rules',
       author='Goldmund, Wyldebeast & Wunderliebe (K.C. Leong)',
       author_email='leong@gw20e.com',
       url='http://www.gw20e.com/',
@@ -36,7 +37,9 @@ setup(name='collective.contentrules.mailtogroup',
           'plone.app.contentrules',
           'plone.app.form >=1.1.8'
           'plone.app.vocabularies',
+          'plone.api',
           'plone.contentrules',
+          'plone.principalsource',
           'Products.CMFCore',
           'Products.CMFPlone',
           'setuptools',
@@ -47,9 +50,12 @@ setup(name='collective.contentrules.mailtogroup',
       ],
       extras_require={
           'test': [
+              'plone.app.robotframework',
+              'plone.app.testing [robot]',
               'Products.MailHost',
               'Products.PloneTestCase',
               'Products.SecureMailHost',
+              'robotsuite',
           ],
       },
       entry_points="""
