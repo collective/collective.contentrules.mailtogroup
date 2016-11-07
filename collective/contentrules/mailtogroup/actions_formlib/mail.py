@@ -14,10 +14,10 @@ from plone.stringinterp.interfaces import IStringInterpolator
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone import PloneMessageFactory as _
 from zope import schema
-from zope.component import adapts
+from zope.component import adapter
 from zope.component.interfaces import ComponentLookupError
 from zope.formlib import form
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface import Interface
 
 
@@ -63,9 +63,9 @@ class IMailGroupAction(Interface):
     )
 
 
+@implementer(IMailGroupAction, IRuleElementData)
 class MailGroupAction(SimpleItem):
     """ The implementation of the action defined before """
-    implements(IMailGroupAction, IRuleElementData)
 
     subject = u''
     source = u''
@@ -83,10 +83,10 @@ class MailGroupAction(SimpleItem):
 ${members}', mapping=dict(groups=groups, members=members))
 
 
+@implementer(IExecutable)
+@adapter(Interface, IMailGroupAction, Interface)
 class MailActionExecutor(object):
     """ The executor for this action. """
-    implements(IExecutable)
-    adapts(Interface, IMailGroupAction, Interface)
 
     def __init__(self, context, element, event):
         self.context = context
