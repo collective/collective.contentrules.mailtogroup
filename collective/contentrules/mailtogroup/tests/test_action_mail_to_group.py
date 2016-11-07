@@ -158,7 +158,7 @@ class TestMailAction(ContentRulesTestCase):
         adding = getMultiAdapter((rule, self.portal.REQUEST), name='+action')
         addview = getMultiAdapter((adding, self.portal.REQUEST),
                                   name=element.addview)
-        self.failUnless(isinstance(addview, MailGroupAddFormView))
+        self.assertTrue(isinstance(addview, MailGroupAddFormView))
 
         if IS_PLONE_5:
             addview.form_instance.update()
@@ -178,7 +178,7 @@ class TestMailAction(ContentRulesTestCase):
                                        'message': 'Hey, Oh!'})
 
         e = rule.actions[0]
-        self.failUnless(isinstance(e, MailGroupAction))
+        self.assertTrue(isinstance(e, MailGroupAction))
         self.assertEqual('My Subject', e.subject)
         self.assertEqual('foo@bar.be', e.source)
         self.assertEqual(['group1', 'group2'], e.groups)
@@ -190,7 +190,7 @@ class TestMailAction(ContentRulesTestCase):
         e = MailGroupAction()
         editview = getMultiAdapter((e, self.folder.REQUEST),
                                    name=element.editview)
-        self.failUnless(isinstance(editview, MailGroupEditFormView))
+        self.assertTrue(isinstance(editview, MailGroupEditFormView))
 
     def testExecute(self):
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
@@ -269,7 +269,7 @@ class TestMailAction(ContentRulesTestCase):
         mailFrom = mailSent.get('From')
         mailType = mailSent.get('Content-Type')
         self.assertEqual(len(mailTo), 4)
-        self.failUnless(isinstance(mailSent, Message))
+        self.assertTrue(isinstance(mailSent, Message))
         self.assertTrue(mailType.startswith('multipart/related'))
 
         self.assertEqual('foo@bar.be', mailFrom)
