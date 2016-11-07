@@ -150,6 +150,8 @@ execute this action')
         self.subject = interpolator(self.element.subject)
 
         mime_msg = self.create_mime_msg()
+        if not mime_msg:
+            return False
 
         # Finally send mail.
         # Plone-4
