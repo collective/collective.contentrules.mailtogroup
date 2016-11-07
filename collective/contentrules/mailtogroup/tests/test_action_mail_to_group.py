@@ -131,6 +131,8 @@ class TestMailAction(ContentRulesTestCase):
         groups.addPrincipalToGroup('member2', 'group2')
         groups.addPrincipalToGroup('member3', 'group2')
 
+        groups.addGroup('group3')
+
     def _setup_mockmail(self):
         sm = getSiteManager(self.portal)
         sm.unregisterUtility(provided=IMailHost)
@@ -277,6 +279,23 @@ class TestMailAction(ContentRulesTestCase):
         self.assertIn('member2@dummy.org', mailTo)
         self.assertIn('Document created !', str(mailSent))
 
+
+    def testExecuteEmptyGroup(self):
+        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        dummyMailHost = self._setup_mockmail()
+
+        e = MailGroupAction()
+        e.source = 'foo@bar.be'
+        e.groups = ['group3']
+        e.members = []
+        e.message = 'Document created !'
+        ex = getMultiAdapter((self.folder, e, DummyEvent(self.folder.d1)),
+                             IExecutable)
+        ret = ex()
+
+        self.assertFalse(ret)
+
+        self.assertEqual(len(dummyMailHost.messages), 0)
 
 def test_suite():
     from unittest import TestSuite, makeSuite
