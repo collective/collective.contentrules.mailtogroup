@@ -144,10 +144,10 @@ class TestMailAction(ContentRulesTestCase):
 
     def testRegistered(self):
         element = getUtility(IRuleAction, name='plone.actions.MailGroup')
-        self.assertEquals('plone.actions.MailGroup', element.addview)
-        self.assertEquals('edit', element.editview)
-        self.assertEquals(None, element.for_)
-        self.assertEquals(None, element.event)
+        self.assertEqual('plone.actions.MailGroup', element.addview)
+        self.assertEqual('edit', element.editview)
+        self.assertEqual(None, element.for_)
+        self.assertEqual(None, element.event)
 
     def testInvokeAddView(self):
         element = getUtility(IRuleAction, name='plone.actions.MailGroup')
@@ -179,11 +179,11 @@ class TestMailAction(ContentRulesTestCase):
 
         e = rule.actions[0]
         self.failUnless(isinstance(e, MailGroupAction))
-        self.assertEquals('My Subject', e.subject)
-        self.assertEquals('foo@bar.be', e.source)
-        self.assertEquals(['group1', 'group2'], e.groups)
-        self.assertEquals([default_user, ], e.members)
-        self.assertEquals('Hey, Oh!', e.message)
+        self.assertEqual('My Subject', e.subject)
+        self.assertEqual('foo@bar.be', e.source)
+        self.assertEqual(['group1', 'group2'], e.groups)
+        self.assertEqual([default_user, ], e.members)
+        self.assertEqual('Hey, Oh!', e.message)
 
     def testInvokeEditView(self):
         element = getUtility(IRuleAction, name='plone.actions.MailGroup')
