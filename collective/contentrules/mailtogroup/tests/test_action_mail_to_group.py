@@ -279,7 +279,6 @@ class TestMailAction(ContentRulesTestCase):
         self.assertIn('member2@dummy.org', mailTo)
         self.assertIn('Document created !', str(mailSent))
 
-
     def testExecuteEmptyGroup(self):
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         dummyMailHost = self._setup_mockmail()
@@ -296,6 +295,7 @@ class TestMailAction(ContentRulesTestCase):
         self.assertFalse(ret)
 
         self.assertEqual(len(dummyMailHost.messages), 0)
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite
