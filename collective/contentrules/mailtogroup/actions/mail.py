@@ -18,11 +18,11 @@ from Products.CMFPlone.interfaces import IMailSchema
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.statusmessages.interfaces import IStatusMessage
 from zope import schema
-from zope.component import adapts
+from zope.component import adapter
 from zope.component import getUtility
 from zope.component.interfaces import ComponentLookupError
 from zope.globalrequest import getRequest
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface import Interface
 
 import logging
@@ -74,9 +74,9 @@ class IMailGroupAction(Interface):
     )
 
 
+@implementer(IMailGroupAction, IRuleElementData)
 class MailGroupAction(SimpleItem):
     """ The implementation of the action defined before """
-    implements(IMailGroupAction, IRuleElementData)
 
     subject = u''
     source = u''
@@ -95,10 +95,10 @@ class MailGroupAction(SimpleItem):
                  mapping=dict(groups=groups, both=both, members=members))
 
 
+@implementer(IExecutable)
+@adapter(Interface, IMailGroupAction, Interface)
 class MailActionExecutor(object):
     """ The executor for this action. """
-    implements(IExecutable)
-    adapts(Interface, IMailGroupAction, Interface)
 
     def __init__(self, context, element, event):
         self.context = context
@@ -150,6 +150,8 @@ execute this action')
         self.subject = interpolator(self.element.subject)
 
         mime_msg = self.create_mime_msg()
+        if not mime_msg:
+            return False
 
         # Finally send mail.
         # Plone-4

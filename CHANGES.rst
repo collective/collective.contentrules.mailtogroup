@@ -4,6 +4,9 @@ Changelog
 1.6 (unreleased)
 -------------------
 
+- Add test case for empty recipients.
+  [fulv]
+  
 - Add support for Plone 5.0 and 5.1.  On Plone 5.x we use z3c.form instead of formlib.
   [fulv]
 

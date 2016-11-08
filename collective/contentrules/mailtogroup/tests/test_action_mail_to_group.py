@@ -131,6 +131,8 @@ class TestMailAction(ContentRulesTestCase):
         groups.addPrincipalToGroup('member2', 'group2')
         groups.addPrincipalToGroup('member3', 'group2')
 
+        groups.addGroup('group3')
+
     def _setup_mockmail(self):
         sm = getSiteManager(self.portal)
         sm.unregisterUtility(provided=IMailHost)
@@ -142,10 +144,10 @@ class TestMailAction(ContentRulesTestCase):
 
     def testRegistered(self):
         element = getUtility(IRuleAction, name='plone.actions.MailGroup')
-        self.assertEquals('plone.actions.MailGroup', element.addview)
-        self.assertEquals('edit', element.editview)
-        self.assertEquals(None, element.for_)
-        self.assertEquals(None, element.event)
+        self.assertEqual('plone.actions.MailGroup', element.addview)
+        self.assertEqual('edit', element.editview)
+        self.assertEqual(None, element.for_)
+        self.assertEqual(None, element.event)
 
     def testInvokeAddView(self):
         element = getUtility(IRuleAction, name='plone.actions.MailGroup')
@@ -156,7 +158,7 @@ class TestMailAction(ContentRulesTestCase):
         adding = getMultiAdapter((rule, self.portal.REQUEST), name='+action')
         addview = getMultiAdapter((adding, self.portal.REQUEST),
                                   name=element.addview)
-        self.failUnless(isinstance(addview, MailGroupAddFormView))
+        self.assertTrue(isinstance(addview, MailGroupAddFormView))
 
         if IS_PLONE_5:
             addview.form_instance.update()
@@ -176,19 +178,19 @@ class TestMailAction(ContentRulesTestCase):
                                        'message': 'Hey, Oh!'})
 
         e = rule.actions[0]
-        self.failUnless(isinstance(e, MailGroupAction))
-        self.assertEquals('My Subject', e.subject)
-        self.assertEquals('foo@bar.be', e.source)
-        self.assertEquals(['group1', 'group2'], e.groups)
-        self.assertEquals([default_user, ], e.members)
-        self.assertEquals('Hey, Oh!', e.message)
+        self.assertTrue(isinstance(e, MailGroupAction))
+        self.assertEqual('My Subject', e.subject)
+        self.assertEqual('foo@bar.be', e.source)
+        self.assertEqual(['group1', 'group2'], e.groups)
+        self.assertEqual([default_user, ], e.members)
+        self.assertEqual('Hey, Oh!', e.message)
 
     def testInvokeEditView(self):
         element = getUtility(IRuleAction, name='plone.actions.MailGroup')
         e = MailGroupAction()
         editview = getMultiAdapter((e, self.folder.REQUEST),
                                    name=element.editview)
-        self.failUnless(isinstance(editview, MailGroupEditFormView))
+        self.assertTrue(isinstance(editview, MailGroupEditFormView))
 
     def testExecute(self):
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
@@ -267,7 +269,7 @@ class TestMailAction(ContentRulesTestCase):
         mailFrom = mailSent.get('From')
         mailType = mailSent.get('Content-Type')
         self.assertEqual(len(mailTo), 4)
-        self.failUnless(isinstance(mailSent, Message))
+        self.assertTrue(isinstance(mailSent, Message))
         self.assertTrue(mailType.startswith('multipart/related'))
 
         self.assertEqual('foo@bar.be', mailFrom)
@@ -276,6 +278,23 @@ class TestMailAction(ContentRulesTestCase):
         self.assertIn('member1@dummy.org', mailTo)
         self.assertIn('member2@dummy.org', mailTo)
         self.assertIn('Document created !', str(mailSent))
+
+    def testExecuteEmptyGroup(self):
+        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        dummyMailHost = self._setup_mockmail()
+
+        e = MailGroupAction()
+        e.source = 'foo@bar.be'
+        e.groups = ['group3']
+        e.members = []
+        e.message = 'Document created !'
+        ex = getMultiAdapter((self.folder, e, DummyEvent(self.folder.d1)),
+                             IExecutable)
+        ret = ex()
+
+        self.assertFalse(ret)
+
+        self.assertEqual(len(dummyMailHost.messages), 0)
 
 
 def test_suite():
