@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.6 (unreleased)
+1.6 (2016-11-08)
 -------------------
 
 - Add test case for empty recipients.
