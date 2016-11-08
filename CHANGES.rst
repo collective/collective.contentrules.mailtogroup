@@ -1,11 +1,11 @@
 Changelog
 =========
 
-x.x (Unreleased)
--------------------
+1.7 (unreleased)
+----------------
 
-- 
-  []
+- Nothing changed yet.
+
 
 1.6 (2016-11-08)
 ----------------
