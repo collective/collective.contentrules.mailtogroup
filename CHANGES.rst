@@ -4,7 +4,7 @@ Changelog
 1.7 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Add note aboout unfixed regression. [ida]
 
 
 1.6 (2016-11-08)
