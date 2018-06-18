@@ -19,6 +19,15 @@ was made because the current actions cannot mail to a dynamic set of users (grou
 Adding multiple members was also added because you don't always know the e-mail of
 a certain user.
 
+
+Disclaimer
+==========
+
+If you want to be able to send an content-item's body-text-field, too, you need
+to use version 1.3.1, as with the next version that functionality got deleted
+unintentionally and hasn't been restored.
+
+
 Installation
 ============
 
