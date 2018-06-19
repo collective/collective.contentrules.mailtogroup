@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.6.1 (unreleased)
-----------------
+1.6.1 (2018-06-19)
+------------------
 
 - Add note aboout unfixed regression.
   [ida]
