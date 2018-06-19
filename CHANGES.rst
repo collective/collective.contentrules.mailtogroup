@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.6.2 (unreleased)
+1.6.2 (2018-06-19)
 ------------------
 
 - I messed up 1.6.1 and made a brown bag release.
