@@ -1,10 +1,11 @@
 Changelog
 =========
 
-1.7 (unreleased)
+1.6.1 (unreleased)
 ----------------
 
-- Add note aboout unfixed regression. [ida]
+- Add note aboout unfixed regression.
+  [ida]
 
 
 1.6 (2016-11-08)

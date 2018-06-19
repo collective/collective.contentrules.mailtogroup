@@ -11,6 +11,7 @@ env:
 matrix:
   fast_finish: true
 install:
+- pip install six==1.10.0
 - sed -ie "s#5.0.x.cfg#$PLONE_VERSION.x.cfg#" buildout.cfg
 - python bootstrap.py
 - bin/buildout annotate
