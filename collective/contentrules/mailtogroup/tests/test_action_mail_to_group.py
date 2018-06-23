@@ -167,14 +167,14 @@ class TestMailAction(ContentRulesTestCase):
             content = addview.form_instance.create(data={'subject': 'My Subject',
                                                          'source': 'foo@bar.be',
                                                          'groups': ['group1', 'group2'],
-                                                         'members': [default_user, ],
+                                                         'members': [default_user],
                                                          'message': 'Hey, Oh!'})
             addview.form_instance.add(content)
         else:
             addview.createAndAdd(data={'subject': 'My Subject',
                                        'source': 'foo@bar.be',
                                        'groups': ['group1', 'group2'],
-                                       'members': [default_user, ],
+                                       'members': [default_user],
                                        'message': 'Hey, Oh!'})
 
         e = rule.actions[0]
@@ -182,7 +182,7 @@ class TestMailAction(ContentRulesTestCase):
         self.assertEqual('My Subject', e.subject)
         self.assertEqual('foo@bar.be', e.source)
         self.assertEqual(['group1', 'group2'], e.groups)
-        self.assertEqual([default_user, ], e.members)
+        self.assertEqual([default_user], e.members)
         self.assertEqual('Hey, Oh!', e.message)
 
     def testInvokeEditView(self):
@@ -197,7 +197,7 @@ class TestMailAction(ContentRulesTestCase):
         dummyMailHost = self._setup_mockmail()
         e = MailGroupAction()
         e.source = 'foo@bar.be'
-        e.groups = ['group1', ]
+        e.groups = ['group1']
         e.message = u'Päge \'${title}\' created in ${url} !'
         ex = getMultiAdapter((self.folder, e, DummyEvent(self.folder.d1)),
                              IExecutable)
@@ -216,7 +216,7 @@ class TestMailAction(ContentRulesTestCase):
         dummyMailHost = self._setup_mockmail()
 
         e = MailGroupAction()
-        e.groups = ['group1', ]
+        e.groups = ['group1']
         e.message = 'Document created !'
         ex = getMultiAdapter((self.folder, e, DummyEvent(self.folder.d1)),
                              IExecutable)
@@ -258,7 +258,7 @@ class TestMailAction(ContentRulesTestCase):
         e = MailGroupAction()
         e.source = 'foo@bar.be'
         e.groups = ['group1', 'group2']
-        e.members = [SITE_OWNER_NAME, default_user, ]
+        e.members = [SITE_OWNER_NAME, default_user]
         e.message = 'Document created !'
         ex = getMultiAdapter((self.folder, e, DummyEvent(self.folder.d1)),
                              IExecutable)
