@@ -27,6 +27,7 @@ from zope.interface import Interface
 
 import logging
 
+
 logger = logging.getLogger(__file__)
 
 
@@ -35,14 +36,14 @@ class IMailGroupAction(Interface):
     subject = schema.TextLine(
         title=_(u'Subject'),
         description=_(u'Subject of the message'),
-        required=True
+        required=True,
     )
 
     source = schema.TextLine(
         title=_(u'Email source'),
         description=_('The email address that sends the email. If no email is \
             provided here, it will use the portal from address.'),
-        required=False
+        required=False,
     )
 
     directives.widget('members', SelectWidget)
@@ -50,7 +51,7 @@ class IMailGroupAction(Interface):
         title=_(u'User(s) to mail'),
         description=_('The members where you want to send the e-mail message.'),
         value_type=schema.Choice(vocabulary=u'plone.principalsource.Users'),
-        required=False
+        required=False,
     )
 
     directives.widget('groups', SelectWidget)
@@ -59,7 +60,7 @@ class IMailGroupAction(Interface):
         description=_('The group where you want to send this message. All \
             members of the group will receive an email.'),
         value_type=schema.Choice(vocabulary=u'plone.principalsource.Groups'),
-        required=False
+        required=False,
     )
 
     message = schema.Text(
@@ -70,7 +71,7 @@ class IMailGroupAction(Interface):
             ${namedirectory} will be replaced by the Title of the folder the rule is applied to. \
             ${text} will be replace by the body-text-field (if the item has a field named \'text\') \
             and send it as HTML with a plain-text-fallback.'),
-        required=True
+        required=True,
     )
 
 
@@ -139,13 +140,13 @@ execute this action')
                     messages.add(msg, type=u'error')
                 return False
             from_name = self.mail_settings.email_from_name.strip('"')
-            self.source = '%s <%s>' % (from_name, from_address)
+            self.source = u'{0} <{1}>'.format(from_name, from_address)
 
         self.recipients = self.get_recipients()
 
         # prepend interpolated message with \n to avoid interpretation
         # of first line as header
-        self.message = '\n%s' % interpolator(self.element.message)
+        self.message = u'\n{0!s}'.format(interpolator(self.element.message))
 
         self.subject = interpolator(self.element.subject)
 
@@ -174,16 +175,16 @@ execute this action')
             group = portal_groups.getGroupById(groupId)
 
             if group and group.getProperties().get('email'):
-                recipients.update([group.getProperties().get('email')], )
+                recipients.update([group.getProperties().get('email')])
 
             groupMembers = group.getGroupMemberIds()
             for memberId in groupMembers:
-                members.update([memberId, ])
+                members.update([memberId])
 
         for memberId in members:
             member = portal_membership.getMemberById(memberId)
             if member and member.getProperty('email'):
-                recipients.update([member.getProperty('email'), ])
+                recipients.update([member.getProperty('email')])
 
         return recipients
 
