@@ -23,18 +23,58 @@ a certain user.
 Disclaimer
 ==========
 
-If you want to be able to send an content-item's body-text-field, too, you need
-to use version 1.3.1, as with the next version that functionality got deleted
-unintentionally and hasn't been restored.
+The variable `${namedirectory}` for an item's parent-folder-name, and the
+variable `${text}` for an item's body-text-field, won't be substituted anymore
+since of version 1.5, due to an unintentional breaking commit introducing the
+regressions whicht haven't been restored since then.
+
+If you want to use these variables, you need to pin this add-on to the
+preceding version, see installation-section below.
 
 
 Installation
 ============
 
-Add collective.contentrules.mailtogroup to your buildout as an egg or
-from source. No (generic setup) installation is necessary, the action is
-registered using ZCML. So do add the package to the zcml slug list of your
-[instance] section.
+In your buildout-config, add collective.contentrules.mailtogroup to the 
+egg- and zcml-section in the [instance]-part:
+
+    [buildout]
+    parts =
+        instance
+
+    [instance]
+    recipe = plone.recipe.zope2instance
+
+    eggs =
+        Plone
+        collective.contentrules.mailtogroup
+
+    zcml =
+        collective.contentrules.mailtogroup
+
+
+To define a specific version (see "Disclaimer" above), additionally add a
+[versions]-part, if not existing already, and pin the wanted version:
+
+    [buildout]
+    versions = versions
+
+    [versions]
+    collective.contentrules.mailtogroup = 1.3.1
+
+
+After altering the buildout-config, you need to run buildout and restart
+the server:
+
+    $ cd yourPloneServerDirectory
+    $ ./bin/buildout
+    $ ./bin/instance restart # For ZEO-setups do this with all the clients.
+
+
+An activation of this add-on via a Plone-site's controlpanel is not necessary,
+the features of this add-on will be immediately available to all Plone-sites of
+the ZOPE-instance.
+
 
 Usage
 =====
@@ -44,6 +84,7 @@ Under 'actions' you now have a new option: Send email to groups and users.
 
 When searching for users and groups make sure you press the search button. Don't
 hit enter. Search results for these items are only shown when you press search.
+
 
 Credits
 =======
