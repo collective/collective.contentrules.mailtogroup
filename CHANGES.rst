@@ -17,7 +17,7 @@ Changelog
 1.6.1 (2018-06-19)
 ------------------
 
-- Add note aboout unfixed regression.
+- Add note about unfixed regressions and more verbose install-instructions.
   [ida]
 
 

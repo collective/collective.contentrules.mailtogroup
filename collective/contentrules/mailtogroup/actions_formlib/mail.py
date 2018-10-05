@@ -26,21 +26,21 @@ class IMailGroupAction(Interface):
     subject = schema.TextLine(
         title=_(u'Subject'),
         description=_(u'Subject of the message'),
-        required=True
+        required=True,
     )
 
     source = schema.TextLine(
         title=_(u'Email source'),
         description=_('The email address that sends the email. If no email is \
             provided here, it will use the portal from address.'),
-        required=False
+        required=False,
     )
 
     members = schema.List(
         title=_(u'User(s) to mail'),
         description=_('The members where you want to send the e-mail message.'),
         value_type=schema.Choice(source=UsersSource),
-        required=False
+        required=False,
     )
 
     groups = schema.List(
@@ -48,7 +48,7 @@ class IMailGroupAction(Interface):
         description=_('The group where you want to send this message. All \
             members of the group will receive an email.'),
         value_type=schema.Choice(source=GroupsSource),
-        required=False
+        required=False,
     )
 
     message = schema.Text(
@@ -59,7 +59,7 @@ class IMailGroupAction(Interface):
             ${namedirectory} will be replaced by the Title of the folder the rule is applied to. \
             ${text} will be replace by the body-text-field (if the item has a field named \'text\') \
             and send it as HTML with a plain-text-fallback.'),
-        required=True
+        required=True,
     )
 
 
@@ -105,16 +105,16 @@ class MailActionExecutor(object):
             group = portal_groups.getGroupById(groupId)
 
             if group and group.getProperties().get('email'):
-                recipients.update([group.getProperties().get('email')], )
+                recipients.update([group.getProperties().get('email')])
 
             groupMembers = group.getGroupMemberIds()
             for memberId in groupMembers:
-                members.update([memberId, ])
+                members.update([memberId])
 
         for memberId in members:
             member = portal_membership.getMemberById(memberId)
             if member and member.getProperty('email'):
-                recipients.update([member.getProperty('email'), ])
+                recipients.update([member.getProperty('email')])
 
         mailhost = getToolByName(aq_inner(self.context), 'MailHost')
         if not mailhost:
@@ -133,12 +133,12 @@ execute this action')
                 raise ValueError('You must provide a source address for this \
 action or enter an email in the portal properties')
             from_name = portal.getProperty('email_from_name')
-            source = '%s <%s>' % (from_name, from_address)
+            source = u'{0} <{1}>'.format(from_name, from_address)
 
         obj = self.event.object
         # Not all items have a text-field:
         interpolator = IStringInterpolator(obj)
-        message = '\n%s' % interpolator(self.element.message)
+        message = u'\n{0}'.format(interpolator(self.element.message))
         subject = interpolator(self.element.subject)
 
         # Convert set of recipients to a list:
