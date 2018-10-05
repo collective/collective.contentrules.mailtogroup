@@ -23,57 +23,29 @@ a certain user.
 Disclaimer
 ==========
 
-The variable `${namedirectory}` for an item's parent-folder-name, and the
-variable `${text}` for an item's body-text-field, won't be substituted anymore
-since of version 1.5, due to an unintentional breaking commit introducing the
-regressions whicht haven't been restored since then.
+The variable `${namedirectory}` for an item's parent folder name, and the
+variable `${text}` for an item's body text field, won't be substituted anymore
+since version 1.5, due to an unintentional breaking commit introducing the
+regressions which haven't been restored since then.
 
 If you want to use these variables, you need to pin this add-on to the
-preceding version, see installation-section below.
+preceding version (`1.3.1`_), see installation section below.
+
+.. _1.3.1: https://pypi.org/project/collective.contentrules.mailtogroup/1.3.1/
 
 
 Installation
 ============
 
-In your buildout-config, add collective.contentrules.mailtogroup to the 
-egg- and zcml-section in the [instance]-part:
+Please refer to Plone's official documentation for `installing add-ons`_
+and `pinning specific add-on versions`_.
 
-    [buildout]
-    parts =
-        instance
+An activation of this add-on via a Plone site's controlpanel is not necessary,
+the features of this add-on will be immediately available to all Plone sites of
+the ZOPE instance.
 
-    [instance]
-    recipe = plone.recipe.zope2instance
-
-    eggs =
-        Plone
-        collective.contentrules.mailtogroup
-
-    zcml =
-        collective.contentrules.mailtogroup
-
-
-To define a specific version (see "Disclaimer" above), additionally add a
-[versions]-part, if not existing already, and pin the wanted version:
-
-    [buildout]
-    versions = versions
-
-    [versions]
-    collective.contentrules.mailtogroup = 1.3.1
-
-
-After altering the buildout-config, you need to run buildout and restart
-the server:
-
-    $ cd yourPloneServerDirectory
-    $ ./bin/buildout
-    $ ./bin/instance restart # For ZEO-setups do this with all the clients.
-
-
-An activation of this add-on via a Plone-site's controlpanel is not necessary,
-the features of this add-on will be immediately available to all Plone-sites of
-the ZOPE-instance.
+.. _installing add-ons: https://docs.plone.org/manage/installing/installing_addons.html#installing-add-ons-using-buildout
+.. _pinning specific add-on versions: https://docs.plone.org/manage/installing/installing_addons.html#pinning-add-on-versions
 
 
 Usage
@@ -86,9 +58,19 @@ When searching for users and groups make sure you press the search button. Don't
 hit enter. Search results for these items are only shown when you press search.
 
 
+Future
+======
+
+This add-on has been `approved`_ for inclusion in the core of Plone.
+When that happens, independent development of it might cease.
+
+.. _approved: https://github.com/plone/Products.CMFPlone/issues/1808
+
+
 Credits
 =======
 
-Most of this package is directly copies from the plone.app.contenttules.mail
+Most of this package is directly copied from the plone.app.contenttules.mail
 action. The package collective.contentrules.mailtolocalrole was also used as
 an example.
+

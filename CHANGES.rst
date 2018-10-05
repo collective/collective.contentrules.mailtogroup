@@ -4,7 +4,8 @@ Changelog
 1.6.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add more information about regressions to README.rst.
+  [ida, fulv]
 
 
 1.6.2 (2018-06-19)
@@ -17,8 +18,7 @@ Changelog
 1.6.1 (2018-06-19)
 ------------------
 
-- Add note about unfixed regressions and more verbose install-instructions.
-  [ida]
+- Add note about unfixed regressions and more verbose install-instructions. [ida]
 
 
 1.6 (2016-11-08)
