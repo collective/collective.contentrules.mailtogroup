@@ -1,8 +1,21 @@
 Changelog
 =========
 
-1.6.1 (unreleased)
-----------------
+1.6.3 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
+1.6.2 (2018-06-19)
+------------------
+
+- I messed up 1.6.1 and made a brown bag release.
+  [fulv]
+
+
+1.6.1 (2018-06-19)
+------------------
 
 - Add note about unfixed regressions and more verbose install-instructions.
   [ida]
