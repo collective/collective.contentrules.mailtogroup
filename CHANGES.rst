@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.6.3 (unreleased)
+1.6.3 (2018-10-05)
 ------------------
 
 - Add more information about regressions to README.rst.
