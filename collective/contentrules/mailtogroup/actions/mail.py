@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 from Acquisition import aq_inner
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
@@ -34,13 +33,13 @@ logger = logging.getLogger(__file__)
 class IMailGroupAction(Interface):
     """ Definition of the configuration available for a mail action """
     subject = schema.TextLine(
-        title=_(u'Subject'),
-        description=_(u'Subject of the message'),
+        title=_('Subject'),
+        description=_('Subject of the message'),
         required=True,
     )
 
     source = schema.TextLine(
-        title=_(u'Email source'),
+        title=_('Email source'),
         description=_('The email address that sends the email. If no email is \
             provided here, it will use the portal from address.'),
         required=False,
@@ -48,24 +47,24 @@ class IMailGroupAction(Interface):
 
     directives.widget('members', SelectWidget)
     members = schema.List(
-        title=_(u'User(s) to mail'),
+        title=_('User(s) to mail'),
         description=_('The members where you want to send the e-mail message.'),
-        value_type=schema.Choice(vocabulary=u'plone.principalsource.Users'),
+        value_type=schema.Choice(vocabulary='plone.principalsource.Users'),
         required=False,
     )
 
     directives.widget('groups', SelectWidget)
     groups = schema.List(
-        title=_(u'Group(s) to mail'),
+        title=_('Group(s) to mail'),
         description=_('The group where you want to send this message. All \
             members of the group will receive an email.'),
-        value_type=schema.Choice(vocabulary=u'plone.principalsource.Groups'),
+        value_type=schema.Choice(vocabulary='plone.principalsource.Groups'),
         required=False,
     )
 
     message = schema.Text(
-        title=_(u'Message'),
-        description=_(u'Type in here the message that you want to mail. Some \
+        title=_('Message'),
+        description=_('Type in here the message that you want to mail. Some \
             defined content can be replaced: ${title} will be replaced by the title \
             of the item. ${url} will be replaced by the URL of the item. \
             ${namedirectory} will be replaced by the Title of the folder the rule is applied to. \
@@ -79,11 +78,11 @@ class IMailGroupAction(Interface):
 class MailGroupAction(SimpleItem):
     """ The implementation of the action defined before """
 
-    subject = u''
-    source = u''
-    groups = u''
-    members = u''
-    message = u''
+    subject = ''
+    source = ''
+    groups = ''
+    members = ''
+    message = ''
 
     element = 'plone.actions.MailGroup'
 
@@ -92,13 +91,13 @@ class MailGroupAction(SimpleItem):
         groups = self.groups and 'the groups ' + ', '.join(self.groups) or ''
         members = self.members and 'the members ' + ', '.join(self.members) or ''
         both = (groups and members) and ' and ' or ''
-        return _(u'Email report to ${groups} ${both} ${members}',
+        return _('Email report to ${groups} ${both} ${members}',
                  mapping=dict(groups=groups, both=both, members=members))
 
 
 @implementer(IExecutable)
 @adapter(Interface, IMailGroupAction, Interface)
-class MailActionExecutor(object):
+class MailActionExecutor:
     """ The executor for this action. """
 
     def __init__(self, context, element, event):
@@ -134,19 +133,19 @@ execute this action')
                 request = getRequest()
                 if request:
                     messages = IStatusMessage(request)
-                    msg = _(u'Error sending email from content rule. You must '
+                    msg = _('Error sending email from content rule. You must '
                             'provide a source address for mail '
                             'actions or enter an email in the portal properties')
-                    messages.add(msg, type=u'error')
+                    messages.add(msg, type='error')
                 return False
             from_name = self.mail_settings.email_from_name.strip('"')
-            self.source = u'{0} <{1}>'.format(from_name, from_address)
+            self.source = f'{from_name} <{from_address}>'
 
         self.recipients = self.get_recipients()
 
         # prepend interpolated message with \n to avoid interpretation
         # of first line as header
-        self.message = u'\n{0!s}'.format(interpolator(self.element.message))
+        self.message = f'\n{interpolator(self.element.message)!s}'
 
         self.subject = interpolator(self.element.subject)
 
@@ -229,9 +228,9 @@ execute this action')
 class MailGroupAddForm(ActionAddForm):
     """ An add form for the mail group action """
     schema = IMailGroupAction
-    label = _(u'Add Mail Group Action')
-    description = _(u'A mail action can mail different groups and members.')
-    form_name = _(u'Configure element')
+    label = _('Add Mail Group Action')
+    description = _('A mail action can mail different groups and members.')
+    form_name = _('Configure element')
     Type = MailGroupAction
     # custom template will allow us to add help text
     template = ViewPageTemplateFile('templates/mail.pt')
@@ -244,9 +243,9 @@ class MailGroupAddFormView(ContentRuleFormWrapper):
 class MailGroupEditForm(ActionEditForm):
     """ An edit form for the mail group action """
     schema = IMailGroupAction
-    label = _(u'Edit Mail group Action')
-    description = _(u'A mail action can mail different recipient.')
-    form_name = _(u'Configure element')
+    label = _('Edit Mail group Action')
+    description = _('A mail action can mail different recipient.')
+    form_name = _('Configure element')
 
     # custom template will allow us to add help text
     template = ViewPageTemplateFile('templates/mail.pt')

@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 from Acquisition import aq_inner
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
@@ -24,27 +23,27 @@ from zope.interface import Interface
 class IMailGroupAction(Interface):
     """ Definition of the configuration available for a mail action """
     subject = schema.TextLine(
-        title=_(u'Subject'),
-        description=_(u'Subject of the message'),
+        title=_('Subject'),
+        description=_('Subject of the message'),
         required=True,
     )
 
     source = schema.TextLine(
-        title=_(u'Email source'),
+        title=_('Email source'),
         description=_('The email address that sends the email. If no email is \
             provided here, it will use the portal from address.'),
         required=False,
     )
 
     members = schema.List(
-        title=_(u'User(s) to mail'),
+        title=_('User(s) to mail'),
         description=_('The members where you want to send the e-mail message.'),
         value_type=schema.Choice(source=UsersSource),
         required=False,
     )
 
     groups = schema.List(
-        title=_(u'Group(s) to mail'),
+        title=_('Group(s) to mail'),
         description=_('The group where you want to send this message. All \
             members of the group will receive an email.'),
         value_type=schema.Choice(source=GroupsSource),
@@ -52,8 +51,8 @@ class IMailGroupAction(Interface):
     )
 
     message = schema.Text(
-        title=_(u'Message'),
-        description=_(u'Type in here the message that you want to mail. Some \
+        title=_('Message'),
+        description=_('Type in here the message that you want to mail. Some \
             defined content can be replaced: ${title} will be replaced by the title \
             of the item. ${url} will be replaced by the URL of the item. \
             ${namedirectory} will be replaced by the Title of the folder the rule is applied to. \
@@ -67,11 +66,11 @@ class IMailGroupAction(Interface):
 class MailGroupAction(SimpleItem):
     """ The implementation of the action defined before """
 
-    subject = u''
-    source = u''
-    groups = u''
-    members = u''
-    message = u''
+    subject = ''
+    source = ''
+    groups = ''
+    members = ''
+    message = ''
 
     element = 'plone.actions.MailGroup'
 
@@ -79,13 +78,13 @@ class MailGroupAction(SimpleItem):
     def summary(self):
         groups = ', '.join(self.groups)
         members = ', '.join(self.members)
-        return _(u'Email report to the groups ${groups} and the members \
+        return _('Email report to the groups ${groups} and the members \
 ${members}', mapping=dict(groups=groups, members=members))
 
 
 @implementer(IExecutable)
 @adapter(Interface, IMailGroupAction, Interface)
-class MailActionExecutor(object):
+class MailActionExecutor:
     """ The executor for this action. """
 
     def __init__(self, context, element, event):
@@ -133,12 +132,12 @@ execute this action')
                 raise ValueError('You must provide a source address for this \
 action or enter an email in the portal properties')
             from_name = portal.getProperty('email_from_name')
-            source = u'{0} <{1}>'.format(from_name, from_address)
+            source = f'{from_name} <{from_address}>'
 
         obj = self.event.object
         # Not all items have a text-field:
         interpolator = IStringInterpolator(obj)
-        message = u'\n{0}'.format(interpolator(self.element.message))
+        message = f'\n{interpolator(self.element.message)}'
         subject = interpolator(self.element.subject)
 
         # Convert set of recipients to a list:
@@ -184,9 +183,9 @@ action or enter an email in the portal properties')
 class MailGroupAddForm(AddForm):
     """ An add form for the mail action """
     form_fields = form.FormFields(IMailGroupAction)
-    label = _(u'Add Mail Group Action')
-    description = _(u'A mail action can mail different groups and members.')
-    form_name = _(u'Configure element')
+    label = _('Add Mail Group Action')
+    description = _('A mail action can mail different groups and members.')
+    form_name = _('Configure element')
     form_fields['groups'].custom_widget = UberMultiSelectionWidget
     form_fields['members'].custom_widget = UberMultiSelectionWidget
 
@@ -199,8 +198,8 @@ class MailGroupAddForm(AddForm):
 class MailGroupEditForm(EditForm):
     """ An edit form for the mail action """
     form_fields = form.FormFields(IMailGroupAction)
-    label = _(u'Edit Mail group Action')
-    description = _(u'A mail action can mail different recipient.')
-    form_name = _(u'Configure element')
+    label = _('Edit Mail group Action')
+    description = _('A mail action can mail different recipient.')
+    form_name = _('Configure element')
     form_fields['groups'].custom_widget = UberMultiSelectionWidget
     form_fields['members'].custom_widget = UberMultiSelectionWidget

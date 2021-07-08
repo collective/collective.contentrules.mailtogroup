@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 from collective.contentrules.mailtogroup.tests.dummymailhost import MockMailHost  # noqa
 from email import message_from_string
 from email.Message import Message
@@ -82,7 +81,7 @@ class TestMailAction(ContentRulesTestCase):
             transaction.commit()
             self.afterSetUp()
         else:
-            super(TestMailAction, self).setUp()
+            super().setUp()
 
     def afterSetUp(self):
         """ This method is only run by PloneTestCase, i.e. in Plone 4.
@@ -152,7 +151,7 @@ class TestMailAction(ContentRulesTestCase):
     def testInvokeAddView(self):
         element = getUtility(IRuleAction, name='plone.actions.MailGroup')
         storage = getUtility(IRuleStorage)
-        storage[u'foo'] = Rule()
+        storage['foo'] = Rule()
         rule = self.portal.restrictedTraverse('++rule++foo')
 
         adding = getMultiAdapter((rule, self.portal.REQUEST), name='+action')
@@ -198,7 +197,7 @@ class TestMailAction(ContentRulesTestCase):
         e = MailGroupAction()
         e.source = 'foo@bar.be'
         e.groups = ['group1']
-        e.message = u'Päge \'${title}\' created in ${url} !'
+        e.message = 'Päge \'${title}\' created in ${url} !'
         ex = getMultiAdapter((self.folder, e, DummyEvent(self.folder.d1)),
                              IExecutable)
         ex()
@@ -235,7 +234,7 @@ class TestMailAction(ContentRulesTestCase):
                                                   prefix='plone')
 
             mail_settings.email_from_address = 'manager@portal.be'
-            mail_settings.email_from_name = u'manager'
+            mail_settings.email_from_name = 'manager'
         else:
             sm = getSiteManager(self.portal)
             sm.manage_changeProperties({'email_from_address': 'manager@portal.be'})
