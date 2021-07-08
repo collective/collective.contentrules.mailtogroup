@@ -36,7 +36,6 @@ setup(
         "plone.app.form >=1.1.8" "plone.app.vocabularies",
         "plone.api",
         "plone.contentrules",
-        "plone.principalsource",
         "Products.CMFCore",
         "Products.CMFPlone",
         "setuptools",

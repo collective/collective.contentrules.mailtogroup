@@ -48,7 +48,7 @@ class IMailGroupAction(Interface):
     members = schema.List(
         title=_("User(s) to mail"),
         description=_("The members where you want to send the e-mail message."),
-        value_type=schema.Choice(vocabulary="plone.principalsource.Users"),
+        value_type=schema.Choice(vocabulary="plone.app.vocabularies.Users"),
         required=False,
     )
 
@@ -59,7 +59,7 @@ class IMailGroupAction(Interface):
             "The group where you want to send this message. All \
             members of the group will receive an email."
         ),
-        value_type=schema.Choice(vocabulary="plone.principalsource.Groups"),
+        value_type=schema.Choice(vocabulary="plone.app.vocabularies.Groups"),
         required=False,
     )
 
