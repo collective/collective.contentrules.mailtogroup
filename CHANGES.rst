@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2.0.0 (unreleased)
+------------------
+
+- Python 3 support. Dropped support for Python 2.7 and Plone < 5.2.
+  [agitator]
+
 1.6.4 (unreleased)
 ------------------
 
