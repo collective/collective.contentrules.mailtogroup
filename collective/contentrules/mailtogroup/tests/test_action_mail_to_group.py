@@ -6,7 +6,7 @@ from plone.app.contentrules.rule import Rule
 from plone.app.contentrules.tests.base import ContentRulesTestCase
 from plone.app.contentrules.tests.test_action_mail import DummyEvent
 from plone.app.testing import (
-    IntegrationTesting,
+    FunctionalTesting,
     PloneSandboxLayer,
     setRoles,
     TEST_USER_ID,
@@ -59,8 +59,8 @@ class TestMailToGroupFixture(PloneSandboxLayer):
 
 
 MailToGroupFixture = TestMailToGroupFixture()
-TestMailToGroupLayer = IntegrationTesting(
-    bases=(MailToGroupFixture,), name="TestMailToGroup:Integration"
+TestMailToGroupLayer = FunctionalTesting(
+    bases=(MailToGroupFixture,), name="TestMailToGroup:Functionial"
 )
 
 
