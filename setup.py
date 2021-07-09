@@ -47,7 +47,6 @@ setup(
             "plone.app.robotframework",
             "plone.app.testing [robot]",
             "Products.MailHost",
-            "Products.PloneTestCase",
             "Products.SecureMailHost",
             "robotsuite",
         ],
