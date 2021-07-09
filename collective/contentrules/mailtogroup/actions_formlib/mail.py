@@ -4,8 +4,6 @@ from email.mime.text import MIMEText
 from OFS.SimpleItem import SimpleItem
 from plone.app.contentrules.browser.formhelper import AddForm, EditForm
 from plone.app.form.widgets.uberselectionwidget import UberMultiSelectionWidget
-from plone.app.vocabularies.groups import GroupsSource
-from plone.app.vocabularies.users import UsersSource
 from plone.contentrules.rule.interfaces import IExecutable, IRuleElementData
 from plone.stringinterp.interfaces import IStringInterpolator
 from Products.CMFCore.utils import getToolByName

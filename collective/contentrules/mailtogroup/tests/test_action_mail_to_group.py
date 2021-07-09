@@ -1,6 +1,6 @@
 from collective.contentrules.mailtogroup.tests.dummymailhost import MockMailHost  # noqa
 from email import message_from_string
-from email.Message import Message
+from email.message import Message
 from plone import api
 from plone.app.contentrules.rule import Rule
 from plone.app.contentrules.tests.base import ContentRulesTestCase
