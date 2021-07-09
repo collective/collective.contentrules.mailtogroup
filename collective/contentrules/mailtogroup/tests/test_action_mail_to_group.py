@@ -17,7 +17,6 @@ from plone.contentrules.engine.interfaces import IRuleStorage
 from plone.contentrules.rule.interfaces import IExecutable, IRuleAction
 from Products.CMFCore.utils import getToolByName
 from Products.MailHost.interfaces import IMailHost
-from Products.PloneTestCase.setup import default_user
 from zope.component import getMultiAdapter, getSiteManager, getUtility
 
 import pkg_resources
@@ -86,7 +85,7 @@ class TestMailAction(ContentRulesTestCase):
         self.folder.invokeFactory("Document", "d1", title=unicode("Wälkommen", "utf-8"))
 
         # set up default user and portal owner
-        member = self.portal.portal_membership.getMemberById(default_user)
+        member = self.portal.portal_membership.getMemberById(TEST_USER_ID)
         member.setMemberProperties(dict(email="default@dummy.org"))
         member = self.portal.portal_membership.getMemberById(SITE_OWNER_NAME)
         member.setMemberProperties(dict(email="portal@dummy.org"))
@@ -159,7 +158,7 @@ class TestMailAction(ContentRulesTestCase):
                 "subject": "My Subject",
                 "source": "foo@bar.be",
                 "groups": ["group1", "group2"],
-                "members": [default_user],
+                "members": [TEST_USER_ID],
                 "message": "Hey, Oh!",
             }
         )
@@ -170,7 +169,7 @@ class TestMailAction(ContentRulesTestCase):
         self.assertEqual("My Subject", e.subject)
         self.assertEqual("foo@bar.be", e.source)
         self.assertEqual(["group1", "group2"], e.groups)
-        self.assertEqual([default_user], e.members)
+        self.assertEqual([TEST_USER_ID], e.members)
         self.assertEqual("Hey, Oh!", e.message)
 
     def testInvokeEditView(self):
@@ -238,7 +237,7 @@ class TestMailAction(ContentRulesTestCase):
         e = MailGroupAction()
         e.source = "foo@bar.be"
         e.groups = ["group1", "group2"]
-        e.members = [SITE_OWNER_NAME, default_user]
+        e.members = [SITE_OWNER_NAME, TEST_USER_ID]
         e.message = "Document created !"
         ex = getMultiAdapter((self.folder, e, DummyEvent(self.folder.d1)), IExecutable)
         ex()
