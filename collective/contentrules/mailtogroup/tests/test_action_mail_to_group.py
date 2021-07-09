@@ -38,22 +38,11 @@ else:
     CT_PROFILE = "plone.app.contenttypes:default"
 
 
-IS_PLONE_5 = api.env.plone_version().startswith("5")
-
-if IS_PLONE_5:
-    from collective.contentrules.mailtogroup.actions.mail import (
-        MailGroupAction,
-        MailGroupAddFormView,
-        MailGroupEditFormView,
-    )
-else:
-    from collective.contentrules.mailtogroup.actions_formlib.mail import MailGroupAction
-    from collective.contentrules.mailtogroup.actions_formlib.mail import (
-        MailGroupAddForm as MailGroupAddFormView,
-    )
-    from collective.contentrules.mailtogroup.actions_formlib.mail import (
-        MailGroupEditForm as MailGroupEditFormView,
-    )
+from collective.contentrules.mailtogroup.actions.mail import (
+    MailGroupAction,
+    MailGroupAddFormView,
+    MailGroupEditFormView,
+)
 
 
 class TestMailToGroupFixture(PloneSandboxLayer):
@@ -81,23 +70,17 @@ class TestMailAction(ContentRulesTestCase):
     layer = TestMailToGroupLayer
 
     def setUp(self):
-        """The setup steps below are only needed in Plone 5,
-        because in Plone 4 they are taken care of automatically
-        by PloneTestCase.
+        """The setup for Plone 5.
         """
-        if IS_PLONE_5:
-            self.portal = self.layer["portal"]
-            setRoles(self.portal, TEST_USER_ID, ["Manager"])
-            _createMemberarea(self.portal, TEST_USER_ID)
-            self.folder = self.portal.portal_membership.getHomeFolder(TEST_USER_ID)
-            transaction.commit()
-            self.afterSetUp()
-        else:
-            super().setUp()
+        self.portal = self.layer["portal"]
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        _createMemberarea(self.portal, TEST_USER_ID)
+        self.folder = self.portal.portal_membership.getHomeFolder(TEST_USER_ID)
+        transaction.commit()
+        self.afterSetUp()
 
     def afterSetUp(self):
-        """This method is only run by PloneTestCase, i.e. in Plone 4.
-        Thus, we want to call it from setUp() in Plone 5.
+        """This method will be called from setUp() in Plone 5.
         """
         self.setRoles(("Manager",))
         self.folder.invokeFactory("Document", "d1", title=unicode("Wälkommen", "utf-8"))
@@ -168,30 +151,19 @@ class TestMailAction(ContentRulesTestCase):
         addview = getMultiAdapter((adding, self.portal.REQUEST), name=element.addview)
         self.assertTrue(isinstance(addview, MailGroupAddFormView))
 
-        if IS_PLONE_5:
-            addview.form_instance.update()
-            output = addview.form_instance()
-            self.assertIn("<h1>Substitutions</h1>", output)
-            content = addview.form_instance.create(
-                data={
-                    "subject": "My Subject",
-                    "source": "foo@bar.be",
-                    "groups": ["group1", "group2"],
-                    "members": [default_user],
-                    "message": "Hey, Oh!",
-                }
-            )
-            addview.form_instance.add(content)
-        else:
-            addview.createAndAdd(
-                data={
-                    "subject": "My Subject",
-                    "source": "foo@bar.be",
-                    "groups": ["group1", "group2"],
-                    "members": [default_user],
-                    "message": "Hey, Oh!",
-                }
-            )
+        addview.form_instance.update()
+        output = addview.form_instance()
+        self.assertIn("<h1>Substitutions</h1>", output)
+        content = addview.form_instance.create(
+            data={
+                "subject": "My Subject",
+                "source": "foo@bar.be",
+                "groups": ["group1", "group2"],
+                "members": [default_user],
+                "message": "Hey, Oh!",
+            }
+        )
+        addview.form_instance.add(content)
 
         e = rule.actions[0]
         self.assertTrue(isinstance(e, MailGroupAction))
@@ -235,25 +207,18 @@ class TestMailAction(ContentRulesTestCase):
         e.groups = ["group1"]
         e.message = "Document created !"
         ex = getMultiAdapter((self.folder, e, DummyEvent(self.folder.d1)), IExecutable)
-        if IS_PLONE_5:
-            ret = ex()
-            self.assertFalse(ret)
-        else:
-            self.assertRaises(ValueError, ex)
+        ret = ex()
+        self.assertFalse(ret)
 
         # if we provide a site mail address this won't fail anymore
-        if IS_PLONE_5:
-            from plone.registry.interfaces import IRegistry
-            from Products.CMFPlone.interfaces import IMailSchema
+        from plone.registry.interfaces import IRegistry
+        from Products.CMFPlone.interfaces import IMailSchema
 
-            registry = getUtility(IRegistry)
-            mail_settings = registry.forInterface(IMailSchema, prefix="plone")
+        registry = getUtility(IRegistry)
+        mail_settings = registry.forInterface(IMailSchema, prefix="plone")
 
-            mail_settings.email_from_address = "manager@portal.be"
-            mail_settings.email_from_name = "manager"
-        else:
-            sm = getSiteManager(self.portal)
-            sm.manage_changeProperties({"email_from_address": "manager@portal.be"})
+        mail_settings.email_from_address = "manager@portal.be"
+        mail_settings.email_from_name = "manager"
 
         ret = ex()
 
