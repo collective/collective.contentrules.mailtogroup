@@ -81,8 +81,8 @@ class TestMailAction(ContentRulesTestCase):
     def afterSetUp(self):
         """This method will be called from setUp() in Plone 5.
         """
-        self.setRoles(("Manager",))
-        self.folder.invokeFactory("Document", "d1", title=unicode("Wälkommen", "utf-8"))
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        self.folder.invokeFactory("Document", "d1", title="Wälkommen")
 
         # set up default user and portal owner
         member = self.portal.portal_membership.getMemberById(TEST_USER_ID)
@@ -187,7 +187,7 @@ class TestMailAction(ContentRulesTestCase):
         e.message = "Päge '${title}' created in ${url} !"
         ex = getMultiAdapter((self.folder, e, DummyEvent(self.folder.d1)), IExecutable)
         ex()
-        mailSent = message_from_string(dummyMailHost.messages[0]["msg"])
+        mailSent = message_from_string(dummyMailHost.messages[0]["msg"].decode())
         mailTo = dummyMailHost.messages[0]["mto"][0]
         mailType = mailSent.get("Content-Type")
         self.assertTrue(mailType.startswith("multipart/related"))
@@ -221,7 +221,7 @@ class TestMailAction(ContentRulesTestCase):
 
         ret = ex()
 
-        mailSent = message_from_string(dummyMailHost.messages[0]["msg"])
+        mailSent = message_from_string(dummyMailHost.messages[0]["msg"].decode())
         mailTo = dummyMailHost.messages[0]["mto"][0]
         mailFrom = mailSent.get("From")
         mailType = mailSent.get("Content-Type")
@@ -242,7 +242,7 @@ class TestMailAction(ContentRulesTestCase):
         ex = getMultiAdapter((self.folder, e, DummyEvent(self.folder.d1)), IExecutable)
         ex()
 
-        mailSent = message_from_string(dummyMailHost.messages[0]["msg"])
+        mailSent = message_from_string(dummyMailHost.messages[0]["msg"].decode())
         mailTo = dummyMailHost.messages[0]["mto"]
         mailFrom = mailSent.get("From")
         mailType = mailSent.get("Content-Type")
