@@ -31,7 +31,8 @@ setup(
     zip_safe=False,
     install_requires=[
         "plone.app.contentrules",
-        "plone.app.form >=1.1.8" "plone.app.vocabularies",
+        "plone.app.form >=1.1.8",
+        "plone.app.vocabularies",
         "plone.api",
         "plone.contentrules",
         "Products.CMFCore",
