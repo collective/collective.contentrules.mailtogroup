@@ -16,9 +16,10 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.statusmessages.interfaces import IStatusMessage
 from zope import schema
 from zope.component import adapter, getUtility
-from zope.component.interfaces import ComponentLookupError
+#from zope.component.interfaces import ComponentLookupError
 from zope.globalrequest import getRequest
 from zope.interface import implementer, Interface
+from plone import api
 
 import logging
 
@@ -88,6 +89,7 @@ class MailGroupAction(SimpleItem):
     message = ""
 
     element = "plone.actions.MailGroup"
+    
 
     @property
     def summary(self):
@@ -115,10 +117,11 @@ class MailActionExecutor:
     def __call__(self):
         mailhost = getToolByName(aq_inner(self.context), "MailHost")
         if not mailhost:
-            raise ComponentLookupError(
-                "You must have a Mailhost utility to \
-execute this action"
-            )
+            abc = 1
+            #raise ComponentLookupError(
+            #    "You must have a Mailhost utility to \
+            #execute this action"
+            #)
 
         self.email_charset = self.mail_settings.email_charset
 
@@ -148,23 +151,36 @@ execute this action"
                 return False
             from_name = self.mail_settings.email_from_name.strip('"')
             self.source = f"{from_name} <{from_address}>"
-
-        self.recipients = self.get_recipients()
-
+            
+        
+        
+        self.recipients = ", ".join(self.get_recipients())
+        
         # prepend interpolated message with \n to avoid interpretation
         # of first line as header
-        self.message = f"\n{interpolator(self.element.message)!s}"
+        message = f"\n{interpolator(self.element.message)!s}"
+        # self.subject = interpolator(self.element.subject)
+        
+        outer = MIMEMultipart('alternative')
+        outer['To'] = self.recipients
+        outer['From'] = from_name
+        #api.portal.get_registry_record('plone.email_from_address')
+        outer['Subject'] =  interpolator(self.element.subject)
+        outer.epilogue = ''
 
-        self.subject = interpolator(self.element.subject)
+        # Attach text part
+        #text_part = MIMEText('body_plain', 'plain', _charset='UTF-8')
+        html_part = MIMEMultipart('related')
+        html_text = MIMEText(message, 'html', _charset='UTF-8')
+        html_part.attach(html_text)
 
-        mime_msg = self.create_mime_msg()
-        if not mime_msg:
-            return False
+        outer.attach(html_part)
+        mailhost.send(outer.as_string())
+        
+        # # Finally send mail.
+        mailhost.send(outer.as_string())
 
-        # Finally send mail.
-        # Plone-4
-        mailhost.send(mime_msg)
-
+        
         return True
 
     def get_recipients(self):
@@ -197,7 +213,7 @@ execute this action"
 
     def create_mime_msg(self):
         # Convert set of recipients to a list:
-        list_of_recipients = list(self.recipients)
+        list_of_recipients = self.recipients
         if not list_of_recipients:
             return False
         # Prepare multi-part-message to send html with plain-text-fallback-message,
