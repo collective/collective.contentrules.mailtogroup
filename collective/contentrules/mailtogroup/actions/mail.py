@@ -16,6 +16,7 @@ from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.statusmessages.interfaces import IStatusMessage
 from zope import schema
 from zope.component import adapter, getUtility
+from zope.interface.interfaces import ComponentLookupError
 #from zope.component.interfaces import ComponentLookupError
 from zope.globalrequest import getRequest
 from zope.interface import implementer, Interface
@@ -118,10 +119,10 @@ class MailActionExecutor:
         mailhost = getToolByName(aq_inner(self.context), "MailHost")
         if not mailhost:
             abc = 1
-            #raise ComponentLookupError(
-            #    "You must have a Mailhost utility to \
-            #execute this action"
-            #)
+            raise ComponentLookupError(
+                "You must have a Mailhost utility to \
+            execute this action"
+            )
 
         self.email_charset = self.mail_settings.email_charset
 
