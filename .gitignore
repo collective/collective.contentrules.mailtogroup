@@ -17,7 +17,8 @@ develop-eggs
 .installed.cfg
 lib
 lib64
-reporsts/
+reports/
+.coverage.py*
 
 # Installer logs
 pip-log.txt
