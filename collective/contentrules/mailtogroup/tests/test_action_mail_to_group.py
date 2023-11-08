@@ -1,23 +1,23 @@
 from collective.contentrules.mailtogroup.tests.dummymailhost import MockMailHost  # noqa
 from email import message_from_string
 from email.message import Message
-from plone import api
 from plone.app.contentrules.rule import Rule
 from plone.app.contentrules.tests.base import ContentRulesTestCase
 from plone.app.contentrules.tests.test_action_mail import DummyEvent
-from plone.app.testing import (
-    FunctionalTesting,
-    PloneSandboxLayer,
-    setRoles,
-    TEST_USER_ID,
-)
+from plone.app.testing import FunctionalTesting
+from plone.app.testing import PloneSandboxLayer
+from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
 from plone.app.testing.bbb import _createMemberarea
 from plone.app.testing.interfaces import SITE_OWNER_NAME
 from plone.contentrules.engine.interfaces import IRuleStorage
-from plone.contentrules.rule.interfaces import IExecutable, IRuleAction
+from plone.contentrules.rule.interfaces import IExecutable
+from plone.contentrules.rule.interfaces import IRuleAction
 from Products.CMFCore.utils import getToolByName
 from Products.MailHost.interfaces import IMailHost
-from zope.component import getMultiAdapter, getSiteManager, getUtility
+from zope.component import getMultiAdapter
+from zope.component import getSiteManager
+from zope.component import getUtility
 
 import pkg_resources
 import transaction
@@ -37,15 +37,12 @@ else:
     CT_PROFILE = "plone.app.contenttypes:default"
 
 
-from collective.contentrules.mailtogroup.actions.mail import (
-    MailGroupAction,
-    MailGroupAddFormView,
-    MailGroupEditFormView,
-)
+from collective.contentrules.mailtogroup.actions.mail import MailGroupAction
+from collective.contentrules.mailtogroup.actions.mail import MailGroupAddFormView
+from collective.contentrules.mailtogroup.actions.mail import MailGroupEditFormView
 
 
 class TestMailToGroupFixture(PloneSandboxLayer):
-
     default_bases = (PLONE_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
@@ -65,12 +62,10 @@ TestMailToGroupLayer = FunctionalTesting(
 
 
 class TestMailAction(ContentRulesTestCase):
-
     layer = TestMailToGroupLayer
 
     def setUp(self):
-        """The setup for Plone 5.
-        """
+        """The setup for Plone 5."""
         self.portal = self.layer["portal"]
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         _createMemberarea(self.portal, TEST_USER_ID)
@@ -79,8 +74,7 @@ class TestMailAction(ContentRulesTestCase):
         self.afterSetUp()
 
     def afterSetUp(self):
-        """This method will be called from setUp() in Plone 5.
-        """
+        """This method will be called from setUp() in Plone 5."""
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         self.folder.invokeFactory("Document", "d1", title="Wälkommen")
 
@@ -275,7 +269,8 @@ class TestMailAction(ContentRulesTestCase):
 
 
 def test_suite():
-    from unittest import makeSuite, TestSuite
+    from unittest import makeSuite
+    from unittest import TestSuite
 
     suite = TestSuite()
     suite.addTest(makeSuite(TestMailAction))

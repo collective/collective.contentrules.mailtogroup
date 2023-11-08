@@ -2,11 +2,13 @@ from Acquisition import aq_inner
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from OFS.SimpleItem import SimpleItem
-from plone.app.contentrules.actions import ActionAddForm, ActionEditForm
+from plone.app.contentrules.actions import ActionAddForm
+from plone.app.contentrules.actions import ActionEditForm
 from plone.app.contentrules.browser.formhelper import ContentRuleFormWrapper
 from plone.app.z3cform.widget import SelectWidget
 from plone.autoform import directives
-from plone.contentrules.rule.interfaces import IExecutable, IRuleElementData
+from plone.contentrules.rule.interfaces import IExecutable
+from plone.contentrules.rule.interfaces import IRuleElementData
 from plone.registry.interfaces import IRegistry
 from plone.stringinterp.interfaces import IStringInterpolator
 from Products.CMFCore.utils import getToolByName
@@ -15,12 +17,14 @@ from Products.CMFPlone.interfaces import IMailSchema
 from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from Products.statusmessages.interfaces import IStatusMessage
 from zope import schema
-from zope.component import adapter, getUtility
-from zope.interface.interfaces import ComponentLookupError
-#from zope.component.interfaces import ComponentLookupError
+from zope.component import adapter
+from zope.component import getUtility
+
+# from zope.component.interfaces import ComponentLookupError
 from zope.globalrequest import getRequest
-from zope.interface import implementer, Interface
-from plone import api
+from zope.interface import implementer
+from zope.interface import Interface
+from zope.interface.interfaces import ComponentLookupError
 
 import logging
 
@@ -90,7 +94,6 @@ class MailGroupAction(SimpleItem):
     message = ""
 
     element = "plone.actions.MailGroup"
-    
 
     @property
     def summary(self):
@@ -118,7 +121,6 @@ class MailActionExecutor:
     def __call__(self):
         mailhost = getToolByName(aq_inner(self.context), "MailHost")
         if not mailhost:
-            abc = 1
             raise ComponentLookupError(
                 "You must have a Mailhost utility to \
             execute this action"
@@ -152,36 +154,33 @@ class MailActionExecutor:
                 return False
             from_name = self.mail_settings.email_from_name.strip('"')
             self.source = f"{from_name} <{from_address}>"
-            
-        
-        
+
         self.recipients = ", ".join(self.get_recipients())
-        
+
         # prepend interpolated message with \n to avoid interpretation
         # of first line as header
         message = f"\n{interpolator(self.element.message)!s}"
         # self.subject = interpolator(self.element.subject)
-        
-        outer = MIMEMultipart('alternative')
-        outer['To'] = self.recipients
-        outer['From'] = from_name
-        #api.portal.get_registry_record('plone.email_from_address')
-        outer['Subject'] =  interpolator(self.element.subject)
-        outer.epilogue = ''
+
+        outer = MIMEMultipart("alternative")
+        outer["To"] = self.recipients
+        outer["From"] = from_name
+        # api.portal.get_registry_record('plone.email_from_address')
+        outer["Subject"] = interpolator(self.element.subject)
+        outer.epilogue = ""
 
         # Attach text part
-        #text_part = MIMEText('body_plain', 'plain', _charset='UTF-8')
-        html_part = MIMEMultipart('related')
-        html_text = MIMEText(message, 'html', _charset='UTF-8')
+        # text_part = MIMEText('body_plain', 'plain', _charset='UTF-8')
+        html_part = MIMEMultipart("related")
+        html_text = MIMEText(message, "html", _charset="UTF-8")
         html_part.attach(html_text)
 
         outer.attach(html_part)
         mailhost.send(outer.as_string())
-        
+
         # # Finally send mail.
         mailhost.send(outer.as_string())
 
-        
         return True
 
     def get_recipients(self):
