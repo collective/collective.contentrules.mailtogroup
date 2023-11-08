@@ -10,8 +10,7 @@
 
   <include package="Products.CMFCore" />
   <include package="plone.app.contentrules" />
-  <include zcml:condition='not-have plone-5' package=".actions_formlib"/>
-  <include zcml:condition='have plone-5' package=".actions"/>
+  <include package=".actions"/>
 
   <!-- register locales-directory -->
   <i18n:registerTranslations directory="locales" />
