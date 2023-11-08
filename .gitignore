@@ -17,6 +17,7 @@ develop-eggs
 .installed.cfg
 lib
 lib64
+reporsts/
 
 # Installer logs
 pip-log.txt
@@ -33,3 +34,10 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# venv
+venv/
+pyvenv.cfg
+
+# vscode
+.vscode/
