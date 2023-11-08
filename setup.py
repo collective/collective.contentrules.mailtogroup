@@ -1,4 +1,5 @@
-from setuptools import find_packages, setup
+from setuptools import find_packages
+from setuptools import setup
 
 
 version = "2.0.0.dev0"
@@ -17,10 +18,12 @@ setup(
         "Intended Audience :: System Administrators",
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
+    python_requires=">=3.8",
     keywords="plone automatic content rules",
     author="Goldmund, Wyldebeast & Wunderliebe (K.C. Leong)",
     author_email="leong@gw20e.com",
@@ -31,7 +34,6 @@ setup(
     zip_safe=False,
     install_requires=[
         "plone.app.contentrules",
-        "plone.app.form >=1.1.8",
         "plone.app.vocabularies",
         "plone.api",
         "plone.contentrules",
