@@ -17,11 +17,11 @@ jobs:
             matrix:
                 plone-version:
                   - 'Plone52'
-                python-version: [3.8, 3.9]
+                python-version: ['3.8', '3.9']
 
         steps:
-            - uses: actions/checkout@v2
-            - uses: actions/cache@v2
+            - uses: actions/checkout@v4
+            - uses: actions/cache@v3
               with:
                   path: |
                     ~/.cache/pip
