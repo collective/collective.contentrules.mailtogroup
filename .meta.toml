@@ -11,3 +11,8 @@ check_manifest_ignores = """
     "*.txt"
 """
 dependencies_ignores = "['plone.app.dexterity']"
+
+[gitignore]
+extra_lines = """
+instance.yml
+"""
