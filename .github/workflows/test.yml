@@ -1,0 +1,59 @@
+name: Test the addon code
+
+on:
+  # push:
+  #   branches:
+  #     - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
+        plone:
+          - "6.0-dev"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Plone ${{ matrix.plone }} with Python ${{ matrix.python }}
+        id: setup
+        uses: plone/setup-plone@v2.0.0
+        with:
+          python-version: ${{ matrix.python }}
+          plone-version: ${{ matrix.plone }}
+
+      - name: Install package
+        run: |
+          make VENV=off install
+
+      - uses: nanasess/setup-chromedriver@v2
+
+      - name: Start chromedriver
+        run: |
+          export DISPLAY=:99
+          chromedriver --url-base=/wd/hub &
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+
+      - name: Run tests
+        run: |
+          ROBOT_BROWSER=headlesschrome make VENV=off test-ignore-warnings
+
+      - name: Save Robotframework Log
+        uses: actions/upload-artifact@v3
+        # safe artifacts only once
+        if: matrix.python == '3.11'
+        with:
+          name: robottest-logfiles
+          path: |
+            test_*
+            robot_*

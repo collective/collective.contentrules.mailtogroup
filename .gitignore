@@ -45,7 +45,7 @@ var/
 /venv/
 .installed.txt
 
-instance.yml
+instance.yaml
 
 ##
 # Add extra configuration options in .meta.toml:
