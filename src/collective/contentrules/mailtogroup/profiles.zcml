@@ -24,6 +24,14 @@
       post_handler=".setuphandlers.uninstall"
       />
 
+  <genericsetup:registerProfile
+      name="testing"
+      title="collective.contentrules.mailtogroup (testing)"
+      description="Installs the testprofile for collective.contentrules.mailtogroup add-on."
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/testing"
+      />
+
   <utility
       factory=".setuphandlers.HiddenProfiles"
       name="collective.contentrules.mailtogroup-hiddenprofiles"

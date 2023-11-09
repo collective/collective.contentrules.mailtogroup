@@ -140,6 +140,7 @@ class MailActionExecutor:
             # no source provided, looking for the site wide from email
             # address
             from_address = self.mail_settings.email_from_address
+            from_name = self.mail_settings.email_from_name.strip('"')
             if not from_address:
                 # the mail can't be sent. Try to inform the user
                 request = getRequest()
@@ -152,7 +153,7 @@ class MailActionExecutor:
                     )
                     messages.add(msg, type="error")
                 return False
-            from_name = self.mail_settings.email_from_name.strip('"')
+
             self.source = f"{from_name} <{from_address}>"
 
         self.recipients = ", ".join(self.get_recipients())
@@ -164,7 +165,7 @@ class MailActionExecutor:
 
         outer = MIMEMultipart("alternative")
         outer["To"] = self.recipients
-        outer["From"] = from_name
+        outer["From"] = self.source
         # api.portal.get_registry_record('plone.email_from_address')
         outer["Subject"] = interpolator(self.element.subject)
         outer.epilogue = ""

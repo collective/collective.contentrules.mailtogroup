@@ -25,7 +25,8 @@ class CollectiveContentrulesMailtogroupLayer(PloneSandboxLayer):
         self.loadZCML(package=collective.contentrules.mailtogroup)
 
     def setUpPloneSite(self, portal):
-        applyProfile(portal, "collective.contentrules.mailtogroup:default")
+        # applyProfile(portal, "collective.contentrules.mailtogroup:default")
+        applyProfile(portal, "collective.contentrules.mailtogroup:testing")
 
 
 COLLECTIVE_CONTENTRULES_MAILTOGROUP_FIXTURE = CollectiveContentrulesMailtogroupLayer()

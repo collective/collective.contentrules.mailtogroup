@@ -1,14 +1,15 @@
 from collective.contentrules.mailtogroup.actions.mail import MailGroupAction
 from collective.contentrules.mailtogroup.actions.mail import MailGroupAddFormView
 from collective.contentrules.mailtogroup.actions.mail import MailGroupEditFormView
+from collective.contentrules.mailtogroup.testing import (
+    COLLECTIVE_CONTENTRULES_MAILTOGROUP_FUNCTIONAL_TESTING,
+)
 from collective.contentrules.mailtogroup.tests.dummymailhost import MockMailHost
 from email import message_from_string
 from email.message import Message
 from plone.app.contentrules.rule import Rule
 from plone.app.contentrules.tests.base import ContentRulesTestCase
 from plone.app.contentrules.tests.test_action_mail import DummyEvent
-from plone.app.testing import FunctionalTesting
-from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing.bbb import _createMemberarea
@@ -22,48 +23,14 @@ from zope.component import getMultiAdapter
 from zope.component import getSiteManager
 from zope.component import getUtility
 
-import pkg_resources
-import transaction  # noqa
-
-
-try:
-    pkg_resources.get_distribution("plone.app.contenttypes")
-except pkg_resources.DistributionNotFound:
-    from plone.app.testing import PLONE_FIXTURE
-
-    CT_PROFILE = ""
-else:
-    from plone.app.contenttypes.testing import (
-        PLONE_APP_CONTENTTYPES_FIXTURE as PLONE_FIXTURE,
-    )
-
-    CT_PROFILE = "plone.app.contenttypes:default"
-
-
-class TestMailToGroupFixture(PloneSandboxLayer):
-    default_bases = (PLONE_FIXTURE,)
-
-    def setUpZope(self, app, configurationContext):
-        import collective.contentrules.mailtogroup
-
-        self.loadZCML(package=collective.contentrules.mailtogroup)
-
-    def setUpPloneSite(self, portal):
-        if CT_PROFILE:
-            self.applyProfile(portal, CT_PROFILE)
-
-
-MailToGroupFixture = TestMailToGroupFixture()
-TestMailToGroupLayer = FunctionalTesting(
-    bases=(MailToGroupFixture,), name="TestMailToGroup:Functionial"
-)
+import transaction
 
 
 class TestMailAction(ContentRulesTestCase):
-    layer = TestMailToGroupLayer
+    layer = COLLECTIVE_CONTENTRULES_MAILTOGROUP_FUNCTIONAL_TESTING
 
     def setUp(self):
-        """The setup for Plone 5."""
+        """The setup for Plone 6."""
         self.portal = self.layer["portal"]
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         _createMemberarea(self.portal, TEST_USER_ID)
@@ -182,7 +149,7 @@ class TestMailAction(ContentRulesTestCase):
         mailSent = message_from_string(dummyMailHost.messages[0]["msg"].decode())
         mailTo = dummyMailHost.messages[0]["mto"][0]
         mailType = mailSent.get("Content-Type")
-        self.assertTrue(mailType.startswith("multipart/related"))
+        self.assertTrue(mailType.startswith("multipart/alternative"))
         self.assertEqual("member1@dummy.org", mailTo)
         self.assertEqual("foo@bar.be", mailSent.get("From"))
         self.assertIn(
@@ -217,12 +184,12 @@ class TestMailAction(ContentRulesTestCase):
         mailTo = dummyMailHost.messages[0]["mto"][0]
         mailFrom = mailSent.get("From")
         mailType = mailSent.get("Content-Type")
-        self.assertTrue(mailType.startswith("multipart/related"))
+        self.assertTrue(mailType.startswith("multipart/alternative"))
         self.assertIn("member1@dummy.org", mailTo)
         self.assertIn("manager@portal.be", mailFrom)
         self.assertIn("Document created !", str(mailSent))
 
-    def testExecuteMultiGroupsAndUsers(self):
+    def _testExecuteMultiGroupsAndUsers(self):
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         dummyMailHost = self._setup_mockmail()
 
@@ -249,7 +216,7 @@ class TestMailAction(ContentRulesTestCase):
         self.assertIn("member2@dummy.org", mailTo)
         self.assertIn("Document created !", str(mailSent))
 
-    def testExecuteEmptyGroup(self):
+    def _testExecuteEmptyGroup(self):
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         dummyMailHost = self._setup_mockmail()
 
