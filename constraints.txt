@@ -1,3 +1,0 @@
--c constraints_plone52.txt
-isort>=5
-black==22.3.0
