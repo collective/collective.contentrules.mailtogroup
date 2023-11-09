@@ -166,6 +166,7 @@ class TestMailAction(ContentRulesTestCase):
         e.message = "Document created !"
         ex = getMultiAdapter((self.folder, e, DummyEvent(self.folder.d1)), IExecutable)
         ret = ex()
+        
         self.assertFalse(ret)
 
         # if we provide a site mail address this won't fail anymore

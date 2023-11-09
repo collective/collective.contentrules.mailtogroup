@@ -17,16 +17,15 @@ class CollectiveContentrulesMailtogroupLayer(PloneSandboxLayer):
         # The z3c.autoinclude feature is disabled in the Plone fixture base
         # layer.
         import plone.app.dexterity
-
-        self.loadZCML(package=plone.app.dexterity)
         import plone.restapi
 
+
+        self.loadZCML(package=plone.app.dexterity)
         self.loadZCML(package=plone.restapi)
         self.loadZCML(package=collective.contentrules.mailtogroup)
 
     def setUpPloneSite(self, portal):
-        # applyProfile(portal, "collective.contentrules.mailtogroup:default")
-        applyProfile(portal, "collective.contentrules.mailtogroup:testing")
+        applyProfile(portal, "collective.contentrules.mailtogroup:default")
 
 
 COLLECTIVE_CONTENTRULES_MAILTOGROUP_FIXTURE = CollectiveContentrulesMailtogroupLayer()

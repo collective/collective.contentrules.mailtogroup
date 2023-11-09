@@ -19,8 +19,6 @@ from Products.statusmessages.interfaces import IStatusMessage
 from zope import schema
 from zope.component import adapter
 from zope.component import getUtility
-
-# from zope.component.interfaces import ComponentLookupError
 from zope.globalrequest import getRequest
 from zope.interface import implementer
 from zope.interface import Interface
@@ -140,7 +138,7 @@ class MailActionExecutor:
             # no source provided, looking for the site wide from email
             # address
             from_address = self.mail_settings.email_from_address
-            from_name = self.mail_settings.email_from_name.strip('"')
+            
             if not from_address:
                 # the mail can't be sent. Try to inform the user
                 request = getRequest()
@@ -153,7 +151,8 @@ class MailActionExecutor:
                     )
                     messages.add(msg, type="error")
                 return False
-
+            
+            from_name = self.mail_settings.email_from_name.strip('"')
             self.source = f"{from_name} <{from_address}>"
 
         self.recipients = ", ".join(self.get_recipients())
