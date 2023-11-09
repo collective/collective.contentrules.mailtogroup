@@ -4,16 +4,14 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     xmlns:i18n="http://namespaces.zope.org/i18n"
     xmlns:zcml="http://namespaces.zope.org/zcml"
-    i18n_domain="collective.contentrules.mailtolocalrole"
+    i18n_domain="collective.contentrules.mailtogroup"
     >
-
-  <five:registerPackage package="." />
-
-  <include package="Products.CMFCore" />
-  <include package="plone.app.contentrules" />
-  <include package=".actions" />
 
   <!-- register locales-directory -->
   <i18n:registerTranslations directory="locales" />
+
+  <include file="profiles.zcml" />
+
+  <include package=".actions" />
 
 </configure>

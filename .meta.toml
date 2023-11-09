@@ -10,3 +10,4 @@ check_manifest_ignores = """
     ".coveragerc",
     "*.txt"
 """
+dependencies_ignores = "['plone.app.dexterity']"

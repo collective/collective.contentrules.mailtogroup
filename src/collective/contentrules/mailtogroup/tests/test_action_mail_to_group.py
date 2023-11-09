@@ -1,4 +1,7 @@
-from collective.contentrules.mailtogroup.tests.dummymailhost import MockMailHost  # noqa
+from collective.contentrules.mailtogroup.actions.mail import MailGroupAction
+from collective.contentrules.mailtogroup.actions.mail import MailGroupAddFormView
+from collective.contentrules.mailtogroup.actions.mail import MailGroupEditFormView
+from collective.contentrules.mailtogroup.tests.dummymailhost import MockMailHost
 from email import message_from_string
 from email.message import Message
 from plone.app.contentrules.rule import Rule
@@ -20,7 +23,7 @@ from zope.component import getSiteManager
 from zope.component import getUtility
 
 import pkg_resources
-import transaction
+import transaction  # noqa
 
 
 try:
@@ -35,11 +38,6 @@ else:
     )
 
     CT_PROFILE = "plone.app.contenttypes:default"
-
-
-from collective.contentrules.mailtogroup.actions.mail import MailGroupAction
-from collective.contentrules.mailtogroup.actions.mail import MailGroupAddFormView
-from collective.contentrules.mailtogroup.actions.mail import MailGroupEditFormView
 
 
 class TestMailToGroupFixture(PloneSandboxLayer):
