@@ -102,7 +102,8 @@ ignore = [
     "tox.ini",
     ".flake8",
     "mx.ini",
-    ".coveragerc"
+    ".coveragerc",
+    "*.txt"
 
 ]
 ##

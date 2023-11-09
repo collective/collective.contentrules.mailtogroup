@@ -7,5 +7,6 @@ commit-id = "8c30aa23"
 
 [pyproject]
 check_manifest_ignores = """
-    ".coveragerc"
+    ".coveragerc",
+    "*.txt"
 """
