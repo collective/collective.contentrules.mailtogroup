@@ -1,2 +1,5 @@
 [report]
-include = collective/contentrules/mailtogroup/*
+include =
+    src/collective/contentrules/mailtogroup/*
+omit =
+    */test*

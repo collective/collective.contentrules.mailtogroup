@@ -2,4 +2,3 @@ include *.rst
 graft src
 graft docs
 global-exclude *.pyc
-include Makefile

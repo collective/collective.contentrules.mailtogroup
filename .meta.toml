@@ -15,4 +15,6 @@ dependencies_ignores = "['plone.app.dexterity']"
 [gitignore]
 extra_lines = """
 instance.yaml
+forest.dot
+forest.json
 """
