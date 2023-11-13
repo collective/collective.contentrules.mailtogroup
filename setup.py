@@ -56,7 +56,7 @@ setup(
             "plone.app.testing",
             "plone.app.robotframework[debug]",
             "plone.api",
-            "plone.browserlayer.utils",
+            "plone.browserlayer",
             "plone.restapi",
             "plone.testing>=5.0.0",
         ],
