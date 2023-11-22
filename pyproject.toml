@@ -39,6 +39,7 @@ showcontent = true
 directory = "tests"
 name = "Tests"
 showcontent = true
+[tool.towncrier]
 underlines = ["=","-", ""]
 
 ##
