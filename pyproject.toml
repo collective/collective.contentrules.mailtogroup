@@ -39,6 +39,7 @@ showcontent = true
 directory = "tests"
 name = "Tests"
 showcontent = true
+underlines = ["=","-", ""]
 
 ##
 # Add extra configuration options in .meta.toml:
