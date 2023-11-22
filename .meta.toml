@@ -3,7 +3,7 @@
 # See the inline comments on how to expand/tweak this configuration file
 [meta]
 template = "default"
-commit-id = "8c30aa23"
+commit-id = "07ca8b45"
 
 [pyproject]
 check_manifest_ignores = """
