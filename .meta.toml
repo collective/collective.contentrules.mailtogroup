@@ -3,7 +3,7 @@
 # See the inline comments on how to expand/tweak this configuration file
 [meta]
 template = "default"
-commit-id = "b26deee2"
+commit-id = "f8bda19f"
 
 [pyproject]
 check_manifest_ignores = """
@@ -11,10 +11,6 @@ check_manifest_ignores = """
     "*.txt"
 """
 dependencies_ignores = "['plone.app.dexterity']"
-towncrier_extra_lines = """
-[tool.towncrier]
-underlines = ["=","-", ""]
-"""
 
 [gitignore]
 extra_lines = """

@@ -39,8 +39,6 @@ showcontent = true
 directory = "tests"
 name = "Tests"
 showcontent = true
-[tool.towncrier]
-underlines = ["=","-", ""]
 
 ##
 # Add extra configuration options in .meta.toml:
