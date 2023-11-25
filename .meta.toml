@@ -1,0 +1,31 @@
+# Generated from:
+# https://github.com/plone/meta/tree/master/config/default
+# See the inline comments on how to expand/tweak this configuration file
+[meta]
+template = "default"
+commit-id = "8c30aa23"
+
+[pyproject]
+check_manifest_ignores = """
+    ".coveragerc",
+    "*.txt",
+    "news/*",
+"""
+dependencies_ignores = "['plone.app.dexterity']"
+
+[gitignore]
+extra_lines = """
+instance.yaml
+forest.*
+robot_*.*
+test_*/
+"""
+
+[github]
+jobs = [
+    "qa",
+    "test",
+    "coverage",
+    "dependencies",
+    "release_ready",
+    ]

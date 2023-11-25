@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2.0.0 (unreleased)
+------------------
+
+- Python 3 support. Dropped support for Python 2.7 and Plone < 5.2.
+  [agitator]
+
 1.6.4 (unreleased)
 ------------------
 
@@ -77,7 +83,7 @@ Changelog
   in order to send the message as html and as plain-text, providing a fallback
   for non-html-capable email-clients. [ida]
 
-- Add the {namedirectory} variabel. Which can be used in the subject or message
+- Add the {namedirectory} variable. Which can be used in the subject or message
   to show the title of the folder the rule is applied to.
   [puittenbroek]
 
