@@ -46,8 +46,9 @@ var/
 .installed.txt
 
 instance.yaml
-forest.dot
-forest.json
+forest.*
+robot_*.*
+test_*/
 
 ##
 # Add extra configuration options in .meta.toml:

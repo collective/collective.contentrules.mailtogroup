@@ -3,18 +3,20 @@
 # See the inline comments on how to expand/tweak this configuration file
 [meta]
 template = "default"
-commit-id = "f8bda19f"
+commit-id = "8c30aa23"
 
 [pyproject]
 check_manifest_ignores = """
     ".coveragerc",
-    "*.txt"
+    "*.txt",
+    "news/*",
 """
 dependencies_ignores = "['plone.app.dexterity']"
 
 [gitignore]
 extra_lines = """
 instance.yaml
-forest.dot
-forest.json
+forest.*
+robot_*.*
+test_*/
 """
