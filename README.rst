@@ -1,6 +1,6 @@
-.. image:: https://secure.travis-ci.org/collective/collective.contentrules.mailtogroup.png?branch=master
-    :target: http://travis-ci.org/collective/collective.contentrules.mailtogroup
-    :alt: Travis CI badge
+.. image:: https://github.com/collective/collective.contentrules.mailtogroup/actions/workflows/meta.yml/badge.svg
+    :target: https://github.com/collective/collective.contentrules.mailtogroup/actions/workflows/meta.yml
+    :alt: Meta
 
 .. image:: https://coveralls.io/repos/collective/collective.contentrules.mailtogroup/badge.png?branch=master
     :target: https://coveralls.io/r/collective/collective.contentrules.mailtogroup
@@ -9,6 +9,7 @@
 .. image:: https://pypip.in/d/collective.contentrules.mailtogroup/badge.png
     :target: https://pypi.python.org/pypi/collective.contentrules.mailtogroup/
     :alt: Downloads
+
 
 Introduction
 ============

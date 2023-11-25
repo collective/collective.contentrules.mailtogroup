@@ -140,7 +140,8 @@ ignore = [
     ".flake8",
     "mx.ini",
     ".coveragerc",
-    "*.txt"
+    "*.txt",
+    "news/*",
 
 ]
 ##
