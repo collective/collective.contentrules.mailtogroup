@@ -20,6 +20,8 @@ from zope.interface.interfaces import ComponentLookupError
 #from zope.component.interfaces import ComponentLookupError
 from zope.globalrequest import getRequest
 from zope.interface import implementer, Interface
+from Products.MailHost.MailHost import MailHostError
+from smtplib import SMTPException
 from plone import api
 
 import logging
@@ -118,19 +120,15 @@ class MailActionExecutor:
     def __call__(self):
         mailhost = getToolByName(aq_inner(self.context), "MailHost")
         if not mailhost:
-            abc = 1
             raise ComponentLookupError(
-                "You must have a Mailhost utility to \
-            execute this action"
+                "You must have a Mailhost utility to execute this action"
             )
 
         self.email_charset = self.mail_settings.email_charset
-
         obj = self.event.object
-
         interpolator = IStringInterpolator(obj)
-
         self.source = self.element.source
+
         if self.source:
             self.source = interpolator(self.source).strip()
 
@@ -150,38 +148,54 @@ class MailActionExecutor:
                     )
                     messages.add(msg, type="error")
                 return False
+
             from_name = self.mail_settings.email_from_name.strip('"')
-            self.source = f"{from_name} <{from_address}>"
-            
-        
-        
-        self.recipients = ", ".join(self.get_recipients())
-        
+            self.source = f'"{from_name}" <{from_address}>'
+
+        recipients  = self.get_recipients()
+
+        #recip_string = interpolator(recipients)
+
+        # if recip_string:  # check recipient is not None or empty string
+        #     recipients = {
+        #         str(mail.strip()) for mail in recip_string.split(",") if mail.strip()
+        #     }
+        # else:
+        #     recipients = set()
+
+        # if self.element.exclude_actor:
+        #     mtool = getToolByName(aq_inner(self.context), "portal_membership")
+        #     actor_email = mtool.getAuthenticatedMember().getProperty("email", "")
+        #     if actor_email in recipients:
+        #         recipients.remove(actor_email)
+
         # prepend interpolated message with \n to avoid interpretation
         # of first line as header
-        message = f"\n{interpolator(self.element.message)!s}"
-        # self.subject = interpolator(self.element.subject)
-        
-        outer = MIMEMultipart('alternative')
-        outer['To'] = self.recipients
-        outer['From'] = from_name
-        #api.portal.get_registry_record('plone.email_from_address')
-        outer['Subject'] =  interpolator(self.element.subject)
-        outer.epilogue = ''
+        message = f"\n{interpolator(self.element.message)}"
 
-        # Attach text part
-        #text_part = MIMEText('body_plain', 'plain', _charset='UTF-8')
-        html_part = MIMEMultipart('related')
-        html_text = MIMEText(message, 'html', _charset='UTF-8')
-        html_part.attach(html_text)
+        subject = interpolator(self.element.subject)
 
-        outer.attach(html_part)
-        mailhost.send(outer.as_string())
-        
-        # # Finally send mail.
-        mailhost.send(outer.as_string())
+        for email_recipient in recipients:
+            try:
+                # XXX: We're using "immediate=True" because otherwise we won't
+                # be able to catch SMTPException as the smtp connection is made
+                # as part of the transaction apparatus.
+                # AlecM thinks this wouldn't be a problem if mail queuing was
+                # always on -- but it isn't. (stevem)
+                # so we test if queue is not on to set immediate
+                mailhost.send(
+                    message,
+                    email_recipient,
+                    self.source,
+                    subject=subject,
+                    charset=self.email_charset,
+                    immediate=not mailhost.smtp_queue,
+                )
+            except (MailHostError, SMTPException):
+                logger.exception(
+                    "mail error: Attempt to send mail in content rule failed"
+                )
 
-        
         return True
 
     def get_recipients(self):
@@ -223,7 +237,7 @@ class MailActionExecutor:
         # http://www.peterbe.com/plog/zope-html-emails
         mime_msg = MIMEMultipart("related")
         mime_msg["Subject"] = self.subject
-        mime_msg["From"] = self.source
+        mime_msg["From"] = 'self.source'
         # mime_msg['To'] = ''
         mime_msg["Bcc"] = ", ".join(list_of_recipients)
         mime_msg.preamble = "This is a multi-part message in MIME format."
