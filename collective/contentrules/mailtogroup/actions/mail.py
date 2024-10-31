@@ -23,6 +23,12 @@ from zope.interface import implementer, Interface
 from Products.MailHost.MailHost import MailHostError
 from smtplib import SMTPException
 from plone import api
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+# from pathlib import Path
 
 import logging
 
@@ -78,6 +84,14 @@ class IMailGroupAction(Interface):
             and send it as HTML with a plain-text-fallback."
         ),
         required=True,
+    )
+    
+    include_file = schema.Bool(
+        title=_("Include file attachement"),
+        description=_(
+            "Include file-field in email."
+        ),
+        required=False,
     )
 
 
@@ -153,6 +167,9 @@ class MailActionExecutor:
             self.source = f'"{from_name}" <{from_address}>'
 
         recipients  = self.get_recipients()
+        
+        
+        
 
         #recip_string = interpolator(recipients)
 
@@ -172,24 +189,38 @@ class MailActionExecutor:
         # prepend interpolated message with \n to avoid interpretation
         # of first line as header
         message = f"\n{interpolator(self.element.message)}"
-
         subject = interpolator(self.element.subject)
+        msg = MIMEMultipart()
+        msg['From'] = self.source
+        msg['Subject'] = subject
+        msg.attach(MIMEText(message, 'plain', self.email_charset))
+        
+        if self.element.include_file == True:
+            part = MIMEBase('application', 'octet-stream')
+            part.set_payload(obj.file.data)  # Assuming blob_file.data provides the binary content
+            #encoders.encode_base64(part)
+            part.add_header('Content-Disposition', f'attachment; filename={obj.file.filename}')  # Assuming blob_file.filename provides the file name
+            msg.attach(part)
 
+        #Maybe user bcc instad ?
         for email_recipient in recipients:
             try:
-                # XXX: We're using "immediate=True" because otherwise we won't
+                msg['To'] = email_recipient
+       
+                # Originally: We're using "immediate=True" because otherwise we won't
                 # be able to catch SMTPException as the smtp connection is made
                 # as part of the transaction apparatus.
                 # AlecM thinks this wouldn't be a problem if mail queuing was
                 # always on -- but it isn't. (stevem)
                 # so we test if queue is not on to set immediate
                 mailhost.send(
-                    message,
+                    msg.as_string(),
                     email_recipient,
                     self.source,
                     subject=subject,
                     charset=self.email_charset,
-                    immediate=not mailhost.smtp_queue,
+                    # immediate=not mailhost.smtp_queue,
+                    immediate=True,
                 )
             except (MailHostError, SMTPException):
                 logger.exception(
@@ -208,60 +239,62 @@ class MailActionExecutor:
             members = set(self.element.members)
 
         recipients = set()
+        
+        if self.element.groups and self.element.groups != None:
+            for groupId in self.element.groups:
+                group = portal_groups.getGroupById(groupId)
 
-        for groupId in self.element.groups:
-            group = portal_groups.getGroupById(groupId)
+                if group and group.getProperties().get("email"):
+                    recipients.update([group.getProperties().get("email")])
 
-            if group and group.getProperties().get("email"):
-                recipients.update([group.getProperties().get("email")])
+                groupMembers = group.getGroupMemberIds()
+                for memberId in groupMembers:
+                    members.update([memberId])
 
-            groupMembers = group.getGroupMemberIds()
-            for memberId in groupMembers:
-                members.update([memberId])
-
-        for memberId in members:
-            member = portal_membership.getMemberById(memberId)
-            if member and member.getProperty("email"):
-                recipients.update([member.getProperty("email")])
+        if members and members !=  None:
+            for memberId in members:
+                member = portal_membership.getMemberById(memberId)
+                if member and member.getProperty("email"):
+                    recipients.update([member.getProperty("email")])
 
         return recipients
 
-    def create_mime_msg(self):
-        # Convert set of recipients to a list:
-        list_of_recipients = self.recipients
-        if not list_of_recipients:
-            return False
-        # Prepare multi-part-message to send html with plain-text-fallback-message,
-        # for non-html-capable-mail-clients.
-        # Thanks to Peter Bengtsson for valuable information about this in this post:
-        # http://www.peterbe.com/plog/zope-html-emails
-        mime_msg = MIMEMultipart("related")
-        mime_msg["Subject"] = self.subject
-        mime_msg["From"] = 'self.source'
-        # mime_msg['To'] = ''
-        mime_msg["Bcc"] = ", ".join(list_of_recipients)
-        mime_msg.preamble = "This is a multi-part message in MIME format."
+    # def create_mime_msg(self):
+    #     # Convert set of recipients to a list:
+    #     list_of_recipients = self.recipients
+    #     if not list_of_recipients:
+    #         return False
+    #     # Prepare multi-part-message to send html with plain-text-fallback-message,
+    #     # for non-html-capable-mail-clients.
+    #     # Thanks to Peter Bengtsson for valuable information about this in this post:
+    #     # http://www.peterbe.com/plog/zope-html-emails
+    #     mime_msg = MIMEMultipart("related")
+    #     mime_msg["Subject"] = self.subject
+    #     mime_msg["From"] = 'self.source'
+    #     # mime_msg['To'] = ''
+    #     mime_msg["Bcc"] = ", ".join(list_of_recipients)
+    #     mime_msg.preamble = "This is a multi-part message in MIME format."
 
-        # Encapsulate the plain and HTML versions of the message body
-        # in an 'alternative' part, so message agents can decide
-        # which they want to display.
-        msgAlternative = MIMEMultipart("alternative")
-        mime_msg.attach(msgAlternative)
+    #     # Encapsulate the plain and HTML versions of the message body
+    #     # in an 'alternative' part, so message agents can decide
+    #     # which they want to display.
+    #     msgAlternative = MIMEMultipart("alternative")
+    #     mime_msg.attach(msgAlternative)
 
-        # Convert html-message to plain text.
-        transforms = getToolByName(aq_inner(self.context), "portal_transforms")
-        stream = transforms.convertTo("text/plain", self.message, mimetype="text/html")
-        body_plain = stream.getData().strip()
+    #     # Convert html-message to plain text.
+    #     transforms = getToolByName(aq_inner(self.context), "portal_transforms")
+    #     stream = transforms.convertTo("text/plain", self.message, mimetype="text/html")
+    #     body_plain = stream.getData().strip()
 
-        # We attach the plain text first, the order is mandatory.
-        msg_txt = MIMEText(body_plain, _subtype="plain", _charset=self.email_charset)
-        msgAlternative.attach(msg_txt)
+    #     # We attach the plain text first, the order is mandatory.
+    #     msg_txt = MIMEText(body_plain, _subtype="plain", _charset=self.email_charset)
+    #     msgAlternative.attach(msg_txt)
 
-        # After that, attach html.
-        msg_txt = MIMEText(self.message, _subtype="html", _charset=self.email_charset)
-        msgAlternative.attach(msg_txt)
+    #     # After that, attach html.
+    #     msg_txt = MIMEText(self.message, _subtype="html", _charset=self.email_charset)
+    #     msgAlternative.attach(msg_txt)
 
-        return mime_msg
+    #     return mime_msg
 
 
 class MailGroupAddForm(ActionAddForm):
