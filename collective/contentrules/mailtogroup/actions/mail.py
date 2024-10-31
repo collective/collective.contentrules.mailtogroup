@@ -196,7 +196,8 @@ class MailActionExecutor:
         msg.attach(MIMEText(message, 'plain', self.email_charset))
         
         if self.element.include_file == True:
-            part = MIMEBase('application', 'octet-stream')
+            import pdb; pdb.set_trace()
+            part = MIMEBase('application', obj.contentType)
             part.set_payload(obj.file.data)  # Assuming blob_file.data provides the binary content
             #encoders.encode_base64(part)
             part.add_header('Content-Disposition', f'attachment; filename={obj.file.filename}')  # Assuming blob_file.filename provides the file name
