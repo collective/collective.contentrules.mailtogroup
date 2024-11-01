@@ -169,25 +169,6 @@ class MailActionExecutor:
         recipients  = self.get_recipients()
         
         
-        
-
-        #recip_string = interpolator(recipients)
-
-        # if recip_string:  # check recipient is not None or empty string
-        #     recipients = {
-        #         str(mail.strip()) for mail in recip_string.split(",") if mail.strip()
-        #     }
-        # else:
-        #     recipients = set()
-
-        # if self.element.exclude_actor:
-        #     mtool = getToolByName(aq_inner(self.context), "portal_membership")
-        #     actor_email = mtool.getAuthenticatedMember().getProperty("email", "")
-        #     if actor_email in recipients:
-        #         recipients.remove(actor_email)
-
-        # prepend interpolated message with \n to avoid interpretation
-        # of first line as header
         message = f"\n{interpolator(self.element.message)}"
         subject = interpolator(self.element.subject)
         msg = MIMEMultipart()
@@ -196,10 +177,10 @@ class MailActionExecutor:
         msg.attach(MIMEText(message, 'plain', self.email_charset))
         
         if self.element.include_file == True:
-            import pdb; pdb.set_trace()
-            part = MIMEBase('application', obj.contentType)
+            main_type, sub_type = obj.file.contentType.split('/', 1)  # 'image' and 'png'
+            part = MIMEBase(main_type, sub_type)
             part.set_payload(obj.file.data)  # Assuming blob_file.data provides the binary content
-            #encoders.encode_base64(part)
+            encoders.encode_base64(part)
             part.add_header('Content-Disposition', f'attachment; filename={obj.file.filename}')  # Assuming blob_file.filename provides the file name
             msg.attach(part)
 
