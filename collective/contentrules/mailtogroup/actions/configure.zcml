@@ -8,7 +8,6 @@
   <include package="plone.contentrules" />
   <include package="plone.contentrules" file="meta.zcml" />
   <include package="plone.app.contentrules" />
-  <include package="plone.principalsource" />
 
   <!-- Email action definition -->
   <adapter factory=".mail.MailActionExecutor" />
